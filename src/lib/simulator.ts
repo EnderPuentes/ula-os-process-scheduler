@@ -16,15 +16,16 @@ export class ProcessSchedulerSimulator {
   private state: SimulatorState = SimulatorState.STOPPED;
 
   private config: SimulatorConfig = {
-    algorithm: SimulatorAlgorithm.FCFS,
-    timeExecution: 100,
+    algorithm: {
+      type: SimulatorAlgorithm.FCFS,
+      quantum: 10,
+    },
     processes: {
-      maxBurstTime: 10,
-      maxPriority: 10,
-      maxArrivalTime: 10,
+      maxBurstTime: 250,
+      maxPriority: 5,
+      maxArrivalTime: 50,
     },
     processor: {
-      timeQuantum: 10,
       tickSpeed: 1000,
     },
   };
@@ -40,9 +41,9 @@ export class ProcessSchedulerSimulator {
       id: this.processes.length + 1,
       arrivalTime: Math.floor(
         Math.random() * this.config.processes.maxArrivalTime
-      ),
-      burstTime: Math.floor(Math.random() * this.config.processes.maxBurstTime),
-      priority: Math.floor(Math.random() * this.config.processes.maxPriority),
+      ) + 1,
+      burstTime: Math.floor(Math.random() * this.config.processes.maxBurstTime) + 1,
+      priority: Math.floor(Math.random() * this.config.processes.maxPriority) + 1,
       state: ProcessState.READY,
       remainingIoTime: 0,
       waitingTime: 0,
@@ -141,5 +142,13 @@ export class ProcessSchedulerSimulator {
 
   public getProcesses(): Process[] {
     return this.processes;
+  }
+
+  public getConfig(): SimulatorConfig {
+    return this.config;
+  }
+
+  public updateConfig(config: SimulatorConfig) {
+    this.config = config;
   }
 }
