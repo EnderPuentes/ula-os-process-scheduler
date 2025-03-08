@@ -31,13 +31,12 @@ export function SimulatorProcessControl({ processes }: ProcessControlProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full py-4">
-      <h1 className="text-2xl font-bold">Process Control</h1>
       <Card>
         <CardHeader>
-          <CardTitle>History</CardTitle>
+          <CardTitle className="text-2xl font-bold">Process Control</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
+        <CardContent className="max-h-[500px] overflow-y-auto w-full scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500">
+          <Table className="w-full">
             <TableHeader>
               <TableRow>
                 <TableHead>Process</TableHead>
@@ -55,28 +54,41 @@ export function SimulatorProcessControl({ processes }: ProcessControlProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {processes.map((process: Process) => (
-                <TableRow key={process.id}>
-                  <TableCell>{process.id}</TableCell>
-                  <TableCell>{process.arrivalTime}</TableCell>
-                  <TableCell>{process.burstTime}</TableCell>
-                  <TableCell>{process.priority}</TableCell>
-                  <TableCell>
-                    <Badge
-                      className={cn(getStateStyles(process.state), "text-xs")}
-                    >
-                      {process.state}
-                    </Badge>
+              {processes.length > 0 ? (
+                processes
+                  .sort((a, b) => b.id - a.id)
+                  .map((process: Process) => (
+                    <TableRow key={process.id}>
+                      <TableCell>{process.id}</TableCell>
+                      <TableCell>{process.arrivalTime}</TableCell>
+                      <TableCell>{process.burstTime}</TableCell>
+                      <TableCell>{process.priority}</TableCell>
+                      <TableCell>
+                        <Badge
+                          className={cn(
+                            getStateStyles(process.state),
+                            "text-xs"
+                          )}
+                        >
+                          {process.state}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{process.remainingTime}</TableCell>
+                      <TableCell>{process.waitingTime}</TableCell>
+                      <TableCell>{process.turnaroundTime}</TableCell>
+                      <TableCell>{process.responseTime}</TableCell>
+                      <TableCell>{process.blockingTime}</TableCell>
+                      <TableCell>{process.completionTime}</TableCell>
+                      <TableCell>{process.remainingIoTime}</TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={12} className="text-center">
+                    No processes
                   </TableCell>
-                  <TableCell>{process.remainingTime}</TableCell>
-                  <TableCell>{process.waitingTime}</TableCell>
-                  <TableCell>{process.turnaroundTime}</TableCell>
-                  <TableCell>{process.responseTime}</TableCell>
-                  <TableCell>{process.blockingTime}</TableCell>
-                  <TableCell>{process.completionTime}</TableCell>
-                  <TableCell>{process.remainingIoTime}</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>
