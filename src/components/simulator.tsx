@@ -3,10 +3,11 @@
 import { ProcessSchedulerSimulator } from "@/lib/simulator";
 import { Process, SimulatorConfig, SimulatorState } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { ProcessSchedulerConfiguration } from "./simulator/configuration";
+import { SimulatorConfiguration } from "./simulator/configuration";
+import { SimulatorProcessControl } from "./simulator/process-control";
 import { Button } from "./ui/button";
 
-export function ProcessSchedulerSimulatorVisualizer() {
+export function SimulatorVisualizer() {
   const [simulator, setSimulator] = useState<ProcessSchedulerSimulator | null>(
     null
   );
@@ -34,7 +35,7 @@ export function ProcessSchedulerSimulatorVisualizer() {
     <section className="flex flex-col gap-4 w-full">
       <div className="container">
         {config && (
-          <ProcessSchedulerConfiguration
+          <SimulatorConfiguration
             config={config}
             updateConfig={(newConfig: SimulatorConfig) =>
               simulator?.updateConfig(newConfig)
@@ -70,23 +71,8 @@ export function ProcessSchedulerSimulatorVisualizer() {
           <h1>Time: {time}</h1>
           <h1>Process: {process?.id || "N/A"}</h1>
         </div>
-        <div className="flex flex-col gap-4">
-          <h1>Processes: </h1>
-          <div className="flex flex-col gap-4">
-            {processes.length > 0 ? (
-              processes.map((process) => (
-                <div key={process.id} className="flex flex-row gap-4">
-                  <p>{process.id}</p>
-                  <p>{process.state}</p>
-                  <p>{process.priority}</p>
-                  
-                </div>
-              ))
-            ) : (
-              <p>Process not found</p>
-            )}
-          </div>
-        </div>
+
+        <SimulatorProcessControl processes={processes} />
       </div>
     </section>
   );
