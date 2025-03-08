@@ -13,22 +13,14 @@ import {
 } from "../ui/select";
 import { Slider } from "../ui/slider";
 
-interface ProcessSchedulerConfigurationProps {
-  config: SimulatorConfig;
-  updateConfig: (config: SimulatorConfig) => void;
-}
-
-const SliderControl = ({
-  label,
-  value,
-  onChange,
-  max,
-}: {
+type SliderControlProps = {
   label: string;
   value: number;
   onChange: (value: number) => void;
   max: number;
-}) => (
+};
+
+const SliderControl = ({ label, value, onChange, max }: SliderControlProps) => (
   <div className="flex flex-col gap-2">
     <Label className="text-sm font-medium">{label}</Label>
     <Slider
@@ -42,10 +34,15 @@ const SliderControl = ({
   </div>
 );
 
-export function ProcessSchedulerConfiguration({
+interface SimulatorConfigurationProps {
+  config: SimulatorConfig;
+  updateConfig: (config: SimulatorConfig) => void;
+}
+
+export function SimulatorConfiguration({
   config,
   updateConfig,
-}: ProcessSchedulerConfigurationProps) {
+}: SimulatorConfigurationProps) {
   const [maxBurstTime, setMaxBurstTime] = useState(
     config.processes.maxBurstTime
   );
@@ -72,9 +69,7 @@ export function ProcessSchedulerConfiguration({
         <div className="grid grid-row-2 gap-4">
           <Card className="p shadow-md rounded-lg w-full">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                Algorithm
-              </CardTitle>
+              <CardTitle className="text-lg font-semibold">Algorithm</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <Select
@@ -116,9 +111,7 @@ export function ProcessSchedulerConfiguration({
           </Card>
           <Card className="p-4 shadow-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                Processor
-              </CardTitle>
+              <CardTitle className="text-lg font-semibold">Processor</CardTitle>
             </CardHeader>
             <CardContent>
               <SliderControl
@@ -138,9 +131,7 @@ export function ProcessSchedulerConfiguration({
         </div>
         <Card className="p-4 shadow-md rounded-lg">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">
-              Processes
-            </CardTitle>
+            <CardTitle className="text-lg font-semibold">Processes</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <SliderControl
