@@ -124,3 +124,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.container {
+  @apply max-w-screen-lg mx-auto px-4;
+}
