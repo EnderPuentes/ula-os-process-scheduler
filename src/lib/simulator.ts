@@ -1,5 +1,6 @@
 import {
   Process,
+  ProcessState,
   SimulatorAlgorithm,
   SimulatorConfig,
   SimulatorState,
@@ -34,6 +35,26 @@ export class ProcessSchedulerSimulator {
     this.config = config || this.config;
   }
 
+  private generateRandomProcess(): Process {
+    const newProcess: Process = {
+      id: this.processes.length + 1,
+      arrivalTime: Math.floor(
+        Math.random() * this.config.processes.maxArrivalTime
+      ),
+      burstTime: Math.floor(Math.random() * this.config.processes.maxBurstTime),
+      priority: Math.floor(Math.random() * this.config.processes.maxPriority),
+      state: ProcessState.READY,
+      remainingIoTime: 0,
+      waitingTime: 0,
+      turnaroundTime: 0,
+      responseTime: 0,
+      blockingTime: 0,
+      completionTime: 0,
+      remainingTime: 0,
+    };
+    return newProcess;
+  }
+
   public subscribe(listener: () => void) {
     this.listeners.push(listener);
   }
@@ -46,8 +67,21 @@ export class ProcessSchedulerSimulator {
     if (this.state === SimulatorState.STOPPED) {
       this.state = SimulatorState.RUNNING;
 
+      // Add 10 random processes to the queue
+      for (let i = 0; i < 10; i++) {
+        this.processes.push(this.generateRandomProcess());
+      }
+
       this.timer = setInterval(() => {
         this.currentTime++;
+
+        if (Math.random() < 0.5) {
+          // Add random processes to the queue every 5 ticks
+          for (let i = 0; i < Math.floor(Math.random() * 5); i++) {
+            this.processes.push(this.generateRandomProcess());
+          }
+        }
+
         this.notify();
       }, this.config.processor.tickSpeed);
     }
