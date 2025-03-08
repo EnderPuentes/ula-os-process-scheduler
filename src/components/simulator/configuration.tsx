@@ -63,11 +63,13 @@ export function SimulatorConfiguration({
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <h1 className="text-lg font-bold">Configuration</h1>
-      <div className="grid grid-cols-2 gap-4">
+    <Card className="p-4 rounded-lg">
+      <CardHeader className="p-0">
+        <CardTitle className="text-2xl font-bold">Configuration</CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 gap-4 p-0">
         <div className="grid grid-row-2 gap-4">
-          <Card className="p shadow-md rounded-lg w-full">
+          <Card className="rounded-lg w-full">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">Algorithm</CardTitle>
             </CardHeader>
@@ -109,7 +111,7 @@ export function SimulatorConfiguration({
               )}
             </CardContent>
           </Card>
-          <Card className="p-4 shadow-md rounded-lg">
+          <Card className="rounded-lg w-full">
             <CardHeader>
               <CardTitle className="text-lg font-semibold">Processor</CardTitle>
             </CardHeader>
@@ -129,7 +131,7 @@ export function SimulatorConfiguration({
             </CardContent>
           </Card>
         </div>
-        <Card className="p-4 shadow-md rounded-lg">
+        <Card className="rounded-lg w-full">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">Processes</CardTitle>
           </CardHeader>
@@ -172,7 +174,7 @@ export function SimulatorConfiguration({
             />
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
