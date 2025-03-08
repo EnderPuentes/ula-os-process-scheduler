@@ -30,7 +30,7 @@ const SliderControl = ({
   max: number;
 }) => (
   <div className="flex flex-col gap-2">
-    <Label className="text-sm font-medium text-gray-700">{label}</Label>
+    <Label className="text-sm font-medium">{label}</Label>
     <Slider
       min={0}
       max={max}
@@ -38,7 +38,7 @@ const SliderControl = ({
       onValueChange={(val) => onChange(val[0])}
       className="w-full"
     />
-    <p className="text-sm text-gray-500">{value}</p>
+    <p className="text-sm">{value}</p>
   </div>
 );
 
@@ -70,23 +70,23 @@ export function ProcessSchedulerConfiguration({
       <h1 className="text-lg font-bold">Configuration</h1>
       <div className="grid grid-cols-2 gap-4">
         <div className="grid grid-row-2 gap-4">
-          <Card className="p-4 bg-white shadow-md rounded-lg w-full">
+          <Card className="p shadow-md rounded-lg w-full">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-800">
+              <CardTitle className="text-lg font-semibold">
                 Algorithm
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col gap-4">
               <Select
                 value={algorithm.type}
                 onValueChange={(value) =>
                   handleAlgorithmChange(value as SimulatorAlgorithm)
                 }
               >
-                <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                <SelectTrigger className="w-full border rounded-md shadow-sm">
                   <SelectValue placeholder="Select an algorithm" />
                 </SelectTrigger>
-                <SelectContent className="mt-1 w-full rounded-md bg-white shadow-lg">
+                <SelectContent className="mt-1 w-full rounded-md shadow-lg">
                   {Object.values(SimulatorAlgorithm).map((alg) => (
                     <SelectItem
                       key={alg}
@@ -114,9 +114,9 @@ export function ProcessSchedulerConfiguration({
               )}
             </CardContent>
           </Card>
-          <Card className="p-4 bg-white shadow-md rounded-lg">
+          <Card className="p-4 shadow-md rounded-lg">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-800">
+              <CardTitle className="text-lg font-semibold">
                 Processor
               </CardTitle>
             </CardHeader>
@@ -136,9 +136,9 @@ export function ProcessSchedulerConfiguration({
             </CardContent>
           </Card>
         </div>
-        <Card className="p-4 bg-white shadow-md rounded-lg">
+        <Card className="p-4 shadow-md rounded-lg">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-800">
+            <CardTitle className="text-lg font-semibold">
               Processes
             </CardTitle>
           </CardHeader>
