@@ -16,7 +16,6 @@ export enum SimulatorState {
 
 export type SimulatorConfig = {
   algorithm: SimulatorAlgorithm;
-  state: SimulatorState;
   timeExecution: number;
   processes: {
     maxBurstTime: number;
