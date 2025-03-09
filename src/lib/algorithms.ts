@@ -15,7 +15,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private FCFS(
+  private NON_EXPULSIVE_FCFS(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -23,7 +23,7 @@ export class SchedulerProcessAlgorithms {
     if (processes.length === 0) return null;
 
     // If the current process is running, return null
-    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+    if (currentProcess && currentProcess.state === ProcessState.RUNNING) {
       return null;
     }
 
@@ -41,7 +41,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private SJF(
+  private NON_EXPULSIVE_SJF(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -49,7 +49,7 @@ export class SchedulerProcessAlgorithms {
     if (processes.length === 0) return null;
 
     // If the current process is running, return null
-    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+    if (currentProcess && currentProcess.state === ProcessState.RUNNING) {
       return null;
     }
 
@@ -67,7 +67,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private RANDOM(
+  private NON_EXPULSIVE_RANDOM(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -75,7 +75,7 @@ export class SchedulerProcessAlgorithms {
     if (processes.length === 0) return null;
 
     // If the current process is running, return null
-    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+    if (currentProcess && currentProcess.state === ProcessState.RUNNING) {
       return null;
     }
 
@@ -96,7 +96,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private PRIORITY_NON_EXPULSIVE(
+  private NON_EXPULSIVE_PRIORITY(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -104,7 +104,7 @@ export class SchedulerProcessAlgorithms {
     if (processes.length === 0) return null;
 
     // If the current process is running, return null
-    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+    if (currentProcess && currentProcess.state === ProcessState.RUNNING) {
       return null;
     }
 
@@ -125,14 +125,14 @@ export class SchedulerProcessAlgorithms {
   public getAlgorithm(algorithm: AlgorithmConfig) {
     console.log("algorithm", algorithm);
     switch (algorithm.type) {
-      case SimulatorAlgorithm.FCFS:
-        return this.FCFS;
-      case SimulatorAlgorithm.SJF:
-        return this.SJF;
-      case SimulatorAlgorithm.RANDOM:
-        return this.RANDOM;
-      case SimulatorAlgorithm.PRIORITY_NON_EXPULSIVE:
-        return this.PRIORITY_NON_EXPULSIVE;
+      case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
+        return this.NON_EXPULSIVE_FCFS;
+      case SimulatorAlgorithm.NON_EXPULSIVE_SJF:
+        return this.NON_EXPULSIVE_SJF;
+      case SimulatorAlgorithm.NON_EXPULSIVE_RANDOM:
+        return this.NON_EXPULSIVE_RANDOM;
+      case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
+        return this.NON_EXPULSIVE_PRIORITY;
       default:
         throw new Error(`Algorithm ${algorithm.type} not found`);
     }
