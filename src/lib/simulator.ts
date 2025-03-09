@@ -53,8 +53,10 @@ export class ProcessSchedulerSimulator {
    * Generates a random process with random burst time and priority.
    * @returns {Process} The generated process.
    */
-  private generateRandomProcesses() {
-    for (let i = 0; i < this.config.processes.maxProcesses; i++) {
+  private generateRandomProcesses(
+    maxProcesses = this.config.processes.maxProcesses
+  ) {
+    for (let i = 0; i < maxProcesses; i++) {
       // Generate a random priority between 1 and maxPriority
       const priority =
         Math.floor(Math.random() * this.config.processes.maxPriority) + 1;
@@ -467,6 +469,9 @@ export class ProcessSchedulerSimulator {
     this.notify();
   }
 
+  /**
+   * Schedules the next process to run based on the round robin algorithm.
+   */
   private scheduleProcessRoundRobin() {
     // If there is no current process, set the next process as the current process
 
@@ -563,6 +568,101 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
+   * Schedules the next process to run based on the shortest remaining time first algorithm.
+   */
+  private scheduleProcessShortestRemainingTimeFirst() {
+    // If there is no current process, set the next process as the current process
+
+    if (!this.currentProcess) {
+      const initialProcess = this.queueReadyProcesses.shift() || null;
+
+      if (initialProcess) {
+        // Set the initial process as the current process
+        this.currentProcess = {
+          ...initialProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+          executionCount: initialProcess.executionCount + 1,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+      return;
+    }
+
+    // Order the processes by remaining execution time
+    this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+      return a.remainingTick - b.remainingTick;
+    });
+
+    // Get the next process to run
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    if (nextProcess) {
+      if (this.currentProcess.remainingTick > nextProcess.remainingTick) {
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.READY,
+          responseTick: this.currentTick,
+        };
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+          executionCount: nextProcess.executionCount + 1,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      } else if (this.currentProcess.remainingTick === 0) {
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+
+        // Set the next process as the current process
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+          executionCount: nextProcess.executionCount + 1,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+    } else if (this.currentProcess.remainingTick === 0) {
+      this.currentProcess = {
+        ...this.currentProcess,
+        state: ProcessState.COMPLETED,
+        completionTick: this.currentTick,
+      };
+      // Sync the current process to the list of processes
+      this.syncProcess(this.currentProcess);
+
+      // Add the completed process to the list of completed processes
+      this.listCompletedProcesses.push(this.currentProcess);
+
+      // Set the current process to null
+      this.currentProcess = null;
+
+      // Stop the simulation
+      this.stop();
+    }
+
+    this.notify();
+  }
+
+  /**
    * Schedules the next process to run based on the current algorithm.
    */
   private scheduleProcess() {
@@ -583,6 +683,13 @@ export class ProcessSchedulerSimulator {
         break;
       case SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN:
         this.scheduleProcessRoundRobin();
+        break;
+      case SimulatorAlgorithm.EXPULSIVE_SRTF:
+        // Simulate new process arrival
+        if (Math.random() < 0.5) {
+          this.generateRandomProcesses(1);
+        }
+        this.scheduleProcessShortestRemainingTimeFirst();
         break;
       default:
         throw new Error("Invalid algorithm type");
