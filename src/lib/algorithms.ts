@@ -126,6 +126,8 @@ export class SchedulerProcessAlgorithms {
         return this.SJF;
       case SimulatorAlgorithm.RANDOM:
         return this.RANDOM;
+      case SimulatorAlgorithm.PRIORITY_NON_EXPULSIVE:
+        return this.PRIORITY_NON_EXPULSIVE;
       default:
         throw new Error(`Algorithm ${algorithm.type} not found`);
     }
