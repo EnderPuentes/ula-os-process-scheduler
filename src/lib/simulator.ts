@@ -7,16 +7,20 @@ import {
   SimulatorState,
 } from "./types";
 
+/**
+ * Class representing a process scheduler simulator.
+ * It manages the lifecycle of processes and simulates scheduling algorithms.
+ */
 export class ProcessSchedulerSimulator {
   private algorithms: SchedulerProcessAlgorithms;
+
+  private state: SimulatorState = SimulatorState.STOPPED;
 
   private processes: Process[] = [];
   private currentProcess: Process | null = null;
 
   private timer: NodeJS.Timeout | null = null;
   private currentTick: number = 0;
-
-  private state: SimulatorState = SimulatorState.STOPPED;
 
   private config: SimulatorConfig = {
     algorithm: {
@@ -34,11 +38,19 @@ export class ProcessSchedulerSimulator {
 
   private listeners: (() => void)[] = [];
 
+  /**
+   * Creates an instance of ProcessSchedulerSimulator.
+   * @param {SimulatorConfig | null} [config] - Optional configuration for the simulator.
+   */
   constructor(config?: SimulatorConfig | null) {
     this.config = config || this.config;
     this.algorithms = new SchedulerProcessAlgorithms();
   }
 
+  /**
+   * Generates a random process with random burst time and priority.
+   * @returns {Process} The generated process.
+   */
   private generateRandomProcess(): Process {
     const executionTick =
       Math.floor(Math.random() * this.config.processes.maxBurstTick) + 1;
@@ -60,14 +72,24 @@ export class ProcessSchedulerSimulator {
     return newProcess;
   }
 
+  /**
+   * Subscribes a listener to be notified of simulator updates.
+   * @param {() => void} listener - The listener function to be called on updates.
+   */
   public subscribe(listener: () => void) {
     this.listeners.push(listener);
   }
 
+  /**
+   * Notifies all subscribed listeners of an update.
+   */
   private notify() {
     this.listeners.forEach((listener) => listener());
   }
 
+  /**
+   * Starts the simulation, generating processes and scheduling them.
+   */
   public start() {
     if (this.state === SimulatorState.STOPPED) {
       this.state = SimulatorState.RUNNING;
@@ -92,6 +114,9 @@ export class ProcessSchedulerSimulator {
     }
   }
 
+  /**
+   * Restarts the simulation from a paused state.
+   */
   public restart() {
     if (this.state === SimulatorState.PAUSED) {
       this.state = SimulatorState.RUNNING;
@@ -105,6 +130,9 @@ export class ProcessSchedulerSimulator {
     }
   }
 
+  /**
+   * Pauses the simulation.
+   */
   public pause() {
     if (this.state === SimulatorState.RUNNING) {
       this.state = SimulatorState.PAUSED;
@@ -118,6 +146,9 @@ export class ProcessSchedulerSimulator {
     }
   }
 
+  /**
+   * Resets the simulation to its initial state.
+   */
   public reset() {
     if (this.state === SimulatorState.PAUSED) {
       this.state = SimulatorState.STOPPED;
@@ -134,6 +165,9 @@ export class ProcessSchedulerSimulator {
     }
   }
 
+  /**
+   * Updates the state of all processes based on their current state.
+   */
   private updateProcesses() {
     this.processes
       .filter((process) => process.state !== ProcessState.COMPLETED)
@@ -155,6 +189,10 @@ export class ProcessSchedulerSimulator {
       });
   }
 
+  /**
+   * Updates a specific process in the process list.
+   * @param {Process} process - The process to update.
+   */
   private updateProcess(process: Process) {
     this.processes.forEach((p) => {
       if (p.id === process.id) {
@@ -163,6 +201,9 @@ export class ProcessSchedulerSimulator {
     });
   }
 
+  /**
+   * Schedules the next process to run based on the current algorithm.
+   */
   private scheduleProcess(): void {
     // Get the next process to run
     const nextProcess = this.algorithms.getAlgorithm(
@@ -193,26 +234,50 @@ export class ProcessSchedulerSimulator {
     }
   }
 
+  /**
+   * Gets the current state of the simulator.
+   * @returns {SimulatorState} The current state.
+   */
   public getCurrentState(): SimulatorState {
     return this.state;
   }
 
+  /**
+   * Gets the current tick of the simulator.
+   * @returns {number} The current tick.
+   */
   public getCurrentTick(): number {
     return this.currentTick;
   }
 
+  /**
+   * Gets the current process being executed.
+   * @returns {Process | null} The current process or null if none.
+   */
   public getCurrentProcess(): Process | null {
     return this.currentProcess;
   }
 
+  /**
+   * Gets the list of all processes.
+   * @returns {Process[]} The list of processes.
+   */
   public getProcesses(): Process[] {
     return this.processes;
   }
 
+  /**
+   * Gets the current configuration of the simulator.
+   * @returns {SimulatorConfig} The simulator configuration.
+   */
   public getConfig(): SimulatorConfig {
     return this.config;
   }
 
+  /**
+   * Updates the simulator configuration.
+   * @param {SimulatorConfig} config - The new configuration.
+   */
   public updateConfig(config: SimulatorConfig) {
     this.config = config;
   }
