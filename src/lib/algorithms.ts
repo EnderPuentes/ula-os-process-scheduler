@@ -28,12 +28,12 @@ export class SchedulerProcessAlgorithms {
     }
 
     // Get the next process to run
-    const sortedProcesses = processes
+    const readyProcesses = processes
       .filter((process) => process.state === ProcessState.READY)
       .sort((a, b) => a.arrivalTick - b.arrivalTick);
 
     // Return the first process in the sorted list
-    return sortedProcesses[0];
+    return readyProcesses[0];
   }
 
   /**
@@ -54,12 +54,12 @@ export class SchedulerProcessAlgorithms {
     }
 
     // Get the next process to run
-    const sortedProcesses = processes
+    const readyProcesses = processes
       .filter((process) => process.state === ProcessState.READY)
       .sort((a, b) => a.burstTick - b.burstTick);
 
     // Return the first process in the sorted list
-    return sortedProcesses[0];
+    return readyProcesses[0];
   }
 
   /**
@@ -79,12 +79,14 @@ export class SchedulerProcessAlgorithms {
       return null;
     }
 
-    // Get a random process from the list
-    const filteredProcesses = processes.filter(
+    // Get all the ready processes
+    const readyProcesses = processes.filter(
       (process) => process.state === ProcessState.READY
     );
+
+    // Get a random process from the list
     const randomProcess =
-      filteredProcesses[Math.floor(Math.random() * filteredProcesses.length)];
+      readyProcesses[Math.floor(Math.random() * readyProcesses.length)];
 
     return randomProcess;
   }
@@ -124,8 +126,6 @@ export class SchedulerProcessAlgorithms {
         return this.SJF;
       case SimulatorAlgorithm.RANDOM:
         return this.RANDOM;
-      case SimulatorAlgorithm.PRIORITY_NON_EXPULSIVE:
-        return this.PRIORITY_NON_EXPULSIVE;
       default:
         throw new Error(`Algorithm ${algorithm.type} not found`);
     }
