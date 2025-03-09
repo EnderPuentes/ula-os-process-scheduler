@@ -1,11 +1,16 @@
+export type StateTransitionResult = {
+  success: boolean;
+  error?: string;
+};
+
 export enum SimulatorAlgorithm {
   NON_EXPULSIVE_FCFS = "NON_EXPULSIVE_FCFS", // First Come First Served
   NON_EXPULSIVE_SJF = "NON_EXPULSIVE_SJF", // Shortest Job First
   NON_EXPULSIVE_RANDOM = "NON_EXPULSIVE_RANDOM", // Random
   NON_EXPULSIVE_PRIORITY = "NON_EXPULSIVE_PRIORITY", // Priority Non Expulsive
-  ROUND_ROBIN = "ROUND_ROBIN", // Round Robin
-  SRTF = "SRTF", // Shortest Remaining Time First
-  PRIORITY_EXPULSIVE = "PRIORITY_EXPULSIVE", // Priority Expulsive
+  EXPULSIVE_ROUND_ROBIN = "EXPULSIVE_ROUND_ROBIN", // Round Robin
+  EXPULSIVE_SRTF = "EXPULSIVE_SRTF", // Shortest Remaining Time First
+  EXPULSIVE_PRIORITY = "EXPULSIVE_PRIORITY", // Priority Expulsive
 }
 
 export enum SimulatorState {
@@ -53,4 +58,5 @@ export type Process = {
   turnaroundTick: number;
   blockingTick: number;
   responseTick: number | null;
+  executionCount: number;
 };
