@@ -133,9 +133,47 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
+   * Completes the current process and sets the next process to run.
+   * @param {Process | null} nextProcess - The next process to run.
+   */
+  private completeNonExpulsiveCurrentProcess(nextProcess: Process | null) {
+    if (this.currentProcess) {
+      this.currentProcess = {
+        ...this.currentProcess,
+        state: ProcessState.COMPLETED,
+        completionTick: this.currentTick,
+      };
+
+      // Sync the current process to the list of processes
+      this.syncProcess(this.currentProcess);
+
+      // Add the completed process to the list of completed processes
+      this.listCompletedProcesses.push(this.currentProcess);
+    }
+
+    if (nextProcess) {
+      // Set the next process as the current process
+      this.currentProcess = {
+        ...nextProcess,
+        state: ProcessState.RUNNING,
+        responseTick: this.currentTick,
+        executionCount: nextProcess.executionCount + 1,
+      };
+
+      // Sync the new current process to the list of processes
+      this.syncProcess(this.currentProcess);
+    } else {
+      this.currentProcess = null;
+      this.stop();
+    }
+
+    this.notify();
+  }
+
+  /**
    * Schedules the next process to run based on the first come first served algorithm.
    */
-  private scheduleProcessFirstComeFirstServed() {
+  private scheduleProcessNonExpulsiveFirstComeFirstServed() {
     // If the current process is running, return
 
     if (!this.currentProcess) {
@@ -167,56 +205,13 @@ export class ProcessSchedulerSimulator {
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
 
-    if (nextProcess) {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the next process as the current process
-      this.currentProcess = {
-        ...nextProcess,
-        state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
-        executionCount: nextProcess.executionCount + 1,
-      };
-
-      // Sync the new current process to the list of processes
-      this.syncProcess(this.currentProcess);
-    } else {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the current process to null
-      this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
-    }
-
-    this.notify();
+    this.completeNonExpulsiveCurrentProcess(nextProcess);
   }
 
   /**
    * Schedules the next process to run based on the shortest job first algorithm.
    */
-  private scheduleProcessShortestJobFirst() {
+  private scheduleProcessNonExpulsiveShortestJobFirst() {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
@@ -252,50 +247,7 @@ export class ProcessSchedulerSimulator {
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
 
-    if (nextProcess) {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the next process as the current process
-      this.currentProcess = {
-        ...nextProcess,
-        state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
-        executionCount: nextProcess.executionCount + 1,
-      };
-
-      // Sync the new current process to the list of processes
-      this.syncProcess(this.currentProcess);
-    } else {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the current process to null
-      this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
-    }
-
-    this.notify();
+    this.completeNonExpulsiveCurrentProcess(nextProcess);
   }
 
   /**
@@ -337,50 +289,7 @@ export class ProcessSchedulerSimulator {
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
 
-    if (nextProcess) {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the next process as the current process
-      this.currentProcess = {
-        ...nextProcess,
-        state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
-        executionCount: nextProcess.executionCount + 1,
-      };
-
-      // Sync the new current process to the list of processes
-      this.syncProcess(this.currentProcess);
-    } else {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the current process to null
-      this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
-    }
-
-    this.notify();
+    this.completeNonExpulsiveCurrentProcess(nextProcess);
   }
 
   /**
@@ -423,56 +332,13 @@ export class ProcessSchedulerSimulator {
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
 
-    if (nextProcess) {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the next process as the current process
-      this.currentProcess = {
-        ...nextProcess,
-        state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
-        executionCount: nextProcess.executionCount + 1,
-      };
-
-      // Sync the new current process to the list of processes
-      this.syncProcess(this.currentProcess);
-    } else {
-      this.currentProcess = {
-        ...this.currentProcess,
-        state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
-      };
-
-      // Sync the current process to the list of processes
-      this.syncProcess(this.currentProcess);
-
-      // Add the completed process to the list of completed processes
-      this.listCompletedProcesses.push(this.currentProcess);
-
-      // Set the current process to null
-      this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
-    }
-
-    this.notify();
+    this.completeNonExpulsiveCurrentProcess(nextProcess);
   }
 
   /**
    * Schedules the next process to run based on the round robin algorithm.
    */
-  private scheduleProcessRoundRobin() {
+  private scheduleProcessExpulsiveRoundRobin() {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
@@ -570,7 +436,7 @@ export class ProcessSchedulerSimulator {
   /**
    * Schedules the next process to run based on the shortest remaining time first algorithm.
    */
-  private scheduleProcessShortestRemainingTimeFirst() {
+  private scheduleProcessExpulsiveShortestRemainingTimeFirst() {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
@@ -670,10 +536,10 @@ export class ProcessSchedulerSimulator {
     // Schedule the next process (if applicable)
     switch (this.config.algorithm.type) {
       case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
-        this.scheduleProcessFirstComeFirstServed();
+        this.scheduleProcessNonExpulsiveFirstComeFirstServed();
         break;
       case SimulatorAlgorithm.NON_EXPULSIVE_SJF:
-        this.scheduleProcessShortestJobFirst();
+        this.scheduleProcessNonExpulsiveShortestJobFirst();
         break;
       case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
         this.scheduleProcessNonExpulsivePriority();
@@ -682,14 +548,14 @@ export class ProcessSchedulerSimulator {
         this.scheduleProcessNonExpulsiveRandom();
         break;
       case SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN:
-        this.scheduleProcessRoundRobin();
+        this.scheduleProcessExpulsiveRoundRobin();
         break;
       case SimulatorAlgorithm.EXPULSIVE_SRTF:
         // Simulate new process arrival
         if (Math.random() < 0.5) {
           this.generateRandomProcesses(1);
         }
-        this.scheduleProcessShortestRemainingTimeFirst();
+        this.scheduleProcessExpulsiveShortestRemainingTimeFirst();
         break;
       default:
         throw new Error("Invalid algorithm type");
