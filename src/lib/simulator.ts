@@ -25,16 +25,14 @@ export class ProcessSchedulerSimulator {
   private currentTick: number = 0;
 
   private config: SimulatorConfig = {
-    algorithm: {
-      type: SimulatorAlgorithm.NON_EXPULSIVE_FCFS,
-      quantum: 10,
-    },
+    algorithm: SimulatorAlgorithm.NON_EXPULSIVE_FCFS,
     processes: {
       maxPriority: 5,
       maxBurstTick: 10,
       maxProcesses: 50,
     },
     processor: {
+      quantum: 10,
       tickSpeed: 1000,
     },
   };
@@ -364,7 +362,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess.state === ProcessState.RUNNING &&
       this.currentProcess.remainingTick > 0 &&
       this.currentProcess.burstTick - this.currentProcess.remainingTick <
-        this.config.algorithm.quantum * this.currentProcess.executionCount
+        this.config.processor.quantum * this.currentProcess.executionCount
     ) {
       return;
     }
@@ -532,9 +530,8 @@ export class ProcessSchedulerSimulator {
    * Schedules the next process to run based on the current algorithm.
    */
   private scheduleProcess() {
-    console.log(this.config.algorithm.type);
     // Schedule the next process (if applicable)
-    switch (this.config.algorithm.type) {
+    switch (this.config.algorithm) {
       case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
         this.scheduleProcessNonExpulsiveFirstComeFirstServed();
         break;

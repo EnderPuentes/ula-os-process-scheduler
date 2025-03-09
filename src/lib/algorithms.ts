@@ -2,38 +2,57 @@
  * Algorithms for the process scheduler
  */
 
-import {
-  AlgorithmConfig,
-  Process,
-  ProcessState,
-  SimulatorAlgorithm,
-} from "./types";
+import { Process, ProcessState } from "./types";
 
 export class SchedulerProcessAlgorithms {
   /**
    * First-Come, First-Served (FCFS) scheduling algorithm
-   * @param processes - Array of processes to be scheduled
+   * @param processes - Array of all processes to be scheduled
+   * @param currentProcess - The current process to be scheduled
+   * @param queueReadyProcesses - Array of ready processes to be scheduled
+   * @param listCompletedProcesses - Array of completed processes to be scheduled
    * @returns The next process to run
    */
-  private NON_EXPULSIVE_FCFS(
+  public firstComeFirstServed(
+    currentTick: number,
     processes: Process[],
-    currentProcess: Process | null
-  ): Process | null {
-    // If there are no processes, return null
-    if (processes.length === 0) return null;
-
-    // If the current process is running, return null
+    currentProcess: Process | null,
+    queueReadyProcesses: Process[],
+    listCompletedProcesses: Process[]
+  ) {
+    // If the current process is running, return
     if (currentProcess && currentProcess.state === ProcessState.RUNNING) {
-      return null;
+      return;
     }
 
-    // Get the next process to run
-    const readyProcesses = processes
-      .filter((process) => process.state === ProcessState.READY)
-      .sort((a, b) => a.arrivalTick - b.arrivalTick);
+    // If there are no processes, return
+    if (queueReadyProcesses.length === 0) {
+      currentProcess = null;
+      return;
+    }
 
-    // Return the first process in the sorted list
-    return readyProcesses[0];
+    
+
+    // Get the next process to run
+    const nextProcess = queueReadyProcesses.shift() || null;
+
+    if (nextProcess && currentProcess) {
+      listCompletedProcesses.push({
+        ...currentProcess,
+        state: ProcessState.COMPLETED,
+        completionTick: currentTick,
+      });
+
+      currentProcess = {
+        ...nextProcess,
+        state: ProcessState.RUNNING,
+      };
+
+      nextProcess.state = ProcessState.RUNNING;
+    }
+
+    // Set the current process to the next process
+    currentProcess = nextProcess;
   }
 
   /**
@@ -41,7 +60,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private NON_EXPULSIVE_SJF(
+  public NON_EXPULSIVE_SJF(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -59,7 +78,7 @@ export class SchedulerProcessAlgorithms {
       .sort((a, b) => a.burstTick - b.burstTick);
 
     // Return the first process in the sorted list
-    return readyProcesses[0];
+    return readyProcesses.length > 0 ? readyProcesses[0] : null;
   }
 
   /**
@@ -67,7 +86,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private NON_EXPULSIVE_RANDOM(
+  public NON_EXPULSIVE_RANDOM(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -84,11 +103,10 @@ export class SchedulerProcessAlgorithms {
       (process) => process.state === ProcessState.READY
     );
 
-    // Get a random process from the list
-    const randomProcess =
-      readyProcesses[Math.floor(Math.random() * readyProcesses.length)];
-
-    return randomProcess;
+    // Return a random process from the list
+    return readyProcesses.length > 0
+      ? readyProcesses[Math.floor(Math.random() * readyProcesses.length)]
+      : null;
   }
 
   /**
@@ -96,7 +114,7 @@ export class SchedulerProcessAlgorithms {
    * @param processes - Array of processes to be scheduled
    * @returns The next process to run
    */
-  private NON_EXPULSIVE_PRIORITY(
+  public NON_EXPULSIVE_PRIORITY(
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
@@ -117,24 +135,34 @@ export class SchedulerProcessAlgorithms {
     return readyProcesses[0];
   }
 
-  /**
-   * Get the algorithm
-   * @param algorithm - The algorithm to get
-   * @returns The algorithm
-   */
-  public getAlgorithm(algorithm: AlgorithmConfig) {
-    console.log("algorithm", algorithm);
-    switch (algorithm.type) {
-      case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
-        return this.NON_EXPULSIVE_FCFS;
-      case SimulatorAlgorithm.NON_EXPULSIVE_SJF:
-        return this.NON_EXPULSIVE_SJF;
-      case SimulatorAlgorithm.NON_EXPULSIVE_RANDOM:
-        return this.NON_EXPULSIVE_RANDOM;
-      case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
-        return this.NON_EXPULSIVE_PRIORITY;
-      default:
-        throw new Error(`Algorithm ${algorithm.type} not found`);
-    }
-  }
+  // /**
+  //  * Round Robin scheduling algorithm
+  //  * @param processes - Array of processes to be scheduled
+  //  * @returns The next process to run
+  //  */
+  // public EXPULSIVE_ROUND_ROBIN(
+  //   processes: Process[],
+  //   currentProcess: Process | null
+  // ): Process | null {
+  //   // If there are no processes, return null
+  //   if (processes.length === 0) return null;
+
+  //   // If the current process is running and the remaining time is less than the quantum, return null
+  //   if (
+  //     currentProcess &&
+  //     currentProcess.state === ProcessState.RUNNING &&
+  //     currentProcess.burstTick - currentProcess.remainingTick <
+  //       algorithm.quantum
+  //   ) {
+  //     return null;
+  //   }
+
+  //   // Get the next process to run
+  //   const readyProcesses = processes
+  //     .filter((process) => process.state === ProcessState.READY)
+  //     .sort((a, b) => a.arrivalTick - b.arrivalTick);
+
+  //   // Return the first process in the sorted list
+  //   return readyProcesses[0];
+  // }
 }

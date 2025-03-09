@@ -58,7 +58,6 @@ export function SimulatorConfiguration({
   simulatorState,
 }: SimulatorConfigurationProps) {
   // Algorithm
-  const [quantum, setQuantum] = useState(config.algorithm.quantum);
   const [algorithm, setAlgorithm] = useState(config.algorithm);
 
   // Processes
@@ -72,6 +71,7 @@ export function SimulatorConfiguration({
 
   // Processor
   const [tickSpeed, setTickSpeed] = useState(config.processor.tickSpeed);
+  const [quantum, setQuantum] = useState(config.processor.quantum);
 
   return (
     <Card className="p-4 rounded-lg">
@@ -83,12 +83,12 @@ export function SimulatorConfiguration({
           <h2 className="text-lg font-semibold">Algorithm</h2>
           <Select
             disabled={simulatorState !== SimulatorState.STOPPED}
-            value={algorithm.type}
+            value={algorithm}
             onValueChange={(value) => {
-              setAlgorithm({ type: value as SimulatorAlgorithm, quantum });
+              setAlgorithm(value as SimulatorAlgorithm);
               updateConfig({
                 ...config,
-                algorithm: { type: value as SimulatorAlgorithm, quantum },
+                algorithm: value as SimulatorAlgorithm,
               });
             }}
           >
@@ -107,22 +107,6 @@ export function SimulatorConfiguration({
               ))}
             </SelectContent>
           </Select>
-          {algorithm.type === SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN && (
-            <SliderControl
-              label="Quantum"
-              value={quantum}
-              min={1}
-              max={20}
-              disabled={simulatorState !== SimulatorState.STOPPED}
-              onChange={(value) => {
-                setQuantum(value);
-                updateConfig({
-                  ...config,
-                  algorithm: { ...algorithm, quantum: value },
-                });
-              }}
-            />
-          )}
         </div>
         <Separator />
         <div className="flex flex-col gap-4">
@@ -142,6 +126,22 @@ export function SimulatorConfiguration({
               });
             }}
           />
+          {algorithm === SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN && (
+            <SliderControl
+              label="Quantum"
+              value={quantum}
+              min={1}
+              max={20}
+              disabled={simulatorState !== SimulatorState.STOPPED}
+              onChange={(value) => {
+                setQuantum(value);
+                updateConfig({
+                  ...config,
+                  processor: { ...config.processor, quantum: value },
+                });
+              }}
+            />
+          )}
         </div>
         <Separator />
         <div className="flex flex-col gap-4">

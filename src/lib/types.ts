@@ -19,11 +19,6 @@ export enum SimulatorState {
   STOPPED = "STOPPED",
 }
 
-export type AlgorithmConfig = {
-  type: SimulatorAlgorithm;
-  quantum: number;
-};
-
 type ProcessConfig = {
   maxProcesses: number;
   maxPriority: number;
@@ -31,11 +26,12 @@ type ProcessConfig = {
 };
 
 type ProcessorConfig = {
+  quantum: number;
   tickSpeed: number;
 };
 
 export type SimulatorConfig = {
-  algorithm: AlgorithmConfig;
+  algorithm: SimulatorAlgorithm;
   processes: ProcessConfig;
   processor: ProcessorConfig;
 };
