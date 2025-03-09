@@ -2,10 +2,10 @@ export enum SimulatorAlgorithm {
   FCFS = "FCFS", // First Come First Served
   SJF = "SJF", // Shortest Job First
   RANDOM = "RANDOM", // Random
-  PRIORITY_EXPULSIVE = "PRIORITY_EXPULSIVE", // Priority Expulsive
+  PRIORITY_NON_EXPULSIVE = "PRIORITY_NON_EXPULSIVE", // Priority Non Expulsive
   ROUND_ROBIN = "ROUND_ROBIN", // Round Robin
   SRTF = "SRTF", // Shortest Remaining Time First
-  PRIORITY_NON_EXPULSIVE = "PRIORITY_NON_EXPULSIVE", // Priority Non Expulsive
+  PRIORITY_EXPULSIVE = "PRIORITY_EXPULSIVE", // Priority Expulsive
 }
 
 export enum SimulatorState {
