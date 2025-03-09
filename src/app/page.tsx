@@ -1,6 +1,7 @@
 "use client";
 
 import { SimulatorConfiguration } from "@/components/simulator/configuration";
+import { SimulatorMonitor } from "@/components/simulator/monitor";
 import { SimulatorProcesses } from "@/components/simulator/processes";
 import { SimulatorProcessor } from "@/components/simulator/processor";
 import { ProcessSchedulerSimulator } from "@/lib/simulator";
@@ -70,6 +71,11 @@ export default function SimulatorHome() {
             )}
           </div>
           <div className="flex flex-col gap-4">
+            <SimulatorMonitor
+              queueReadyProcesses={queueReadyProcesses}
+              queueBlockedProcesses={queueBlockedProcesses}
+              listCompletedProcesses={listCompletedProcesses}
+            />
             <SimulatorProcesses title="Process Control" processes={processes} />
           </div>
         </div>
