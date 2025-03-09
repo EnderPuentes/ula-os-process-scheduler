@@ -91,6 +91,11 @@ export class SchedulerProcessAlgorithms {
     return randomProcess;
   }
 
+  /**
+   * Priority Non Expulsive scheduling algorithm
+   * @param processes - Array of processes to be scheduled
+   * @returns The next process to run
+   */
   private PRIORITY_NON_EXPULSIVE(
     processes: Process[],
     currentProcess: Process | null
