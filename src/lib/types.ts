@@ -20,9 +20,8 @@ export type AlgorithmConfig = {
 };
 
 export type ProcessConfig = {
-  maxBurstTime: number;
   maxPriority: number;
-  maxArrivalTime: number;
+  maxBurstTick: number;
 };
 
 export type ProcessorConfig = {
@@ -51,15 +50,14 @@ export enum ProcessState {
 
 export type Process = {
   id: number;
-  arrivalTime: number;
-  burstTime: number;
   priority: number;
-  remainingTime: number;
-  remainingIoTime: number;
   state: ProcessState;
-  waitingTime: number;
-  turnaroundTime: number;
-  responseTime: number | null;
-  blockingTime: number;
-  completionTime: number | null;
+  arrivalTick: number;
+  burstTick: number;
+  remainingTick: number;
+  completionTick: number | null;
+  waitingTick: number;
+  turnaroundTick: number;
+  blockingTick: number;
+  responseTick: number | null;
 };
