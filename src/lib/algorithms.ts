@@ -21,6 +21,7 @@ export class SchedulerProcessAlgorithms {
   ): Process | null {
     // If there are no processes, return null
     if (processes.length === 0) return null;
+
     // If the current process is running, return null
     if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
       return null;
@@ -46,6 +47,7 @@ export class SchedulerProcessAlgorithms {
   ): Process | null {
     // If there are no processes, return null
     if (processes.length === 0) return null;
+
     // If the current process is running, return null
     if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
       return null;
@@ -71,6 +73,7 @@ export class SchedulerProcessAlgorithms {
   ): Process | null {
     // If there are no processes, return null
     if (processes.length === 0) return null;
+
     // If the current process is running, return null
     if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
       return null;
@@ -85,6 +88,28 @@ export class SchedulerProcessAlgorithms {
 
     return randomProcess;
   }
+
+  private PRIORITY_NON_EXPULSIVE(
+    processes: Process[],
+    currentProcess: Process | null
+  ): Process | null {
+    // If there are no processes, return null
+    if (processes.length === 0) return null;
+
+    // If the current process is running, return null
+    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+      return null;
+    }
+
+    // Get the next process to run
+    const readyProcesses = processes
+      .filter((process) => process.state === ProcessState.READY)
+      .sort((a, b) => a.priority - b.priority);
+
+    // Return the first process in the sorted list
+    return readyProcesses[0];
+  }
+
   /**
    * Get the algorithm
    * @param algorithm - The algorithm to get
@@ -99,6 +124,8 @@ export class SchedulerProcessAlgorithms {
         return this.SJF;
       case SimulatorAlgorithm.RANDOM:
         return this.RANDOM;
+      case SimulatorAlgorithm.PRIORITY_NON_EXPULSIVE:
+        return this.PRIORITY_NON_EXPULSIVE;
       default:
         throw new Error(`Algorithm ${algorithm.type} not found`);
     }
