@@ -1,7 +1,7 @@
 "use client";
 
 import { SimulatorConfiguration } from "@/components/simulator/configuration";
-import { SimulatorProcessControl } from "@/components/simulator/process-control";
+import { SimulatorProcesses } from "@/components/simulator/processes";
 import { SimulatorProcessor } from "@/components/simulator/processor";
 import { ProcessSchedulerSimulator } from "@/lib/simulator";
 import { Process, SimulatorConfig, SimulatorState } from "@/lib/types";
@@ -70,42 +70,7 @@ export default function SimulatorHome() {
             )}
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-4">
-              <div className=" p-4 rounded shadow">
-                <h2 className="text-xl font-bold mb-2">Ready Queue</h2>
-                <p>Total: {queueReadyProcesses.length}</p>
-                {/* <ul>
-                  {queueReadyProcesses.map((process) => (
-                    <li key={process.id}>
-                      ID: {process.id}, State: {process.state}
-                    </li>
-                  ))}
-                </ul> */}
-              </div>
-              <div className=" p-4 rounded shadow">
-                <h2 className="text-xl font-bold mb-2">Blocked Queue</h2>
-                <p>Total: {queueBlockedProcesses.length}</p>
-                {/* <ul>
-                  {queueBlockedProcesses.map((process) => (
-                    <li key={process.id}>
-                      ID: {process.id}, State: {process.state}
-                    </li>
-                  ))}
-                </ul> */}
-              </div>
-              <div className=" p-4 rounded shadow">
-                <h2 className="text-xl font-bold mb-2">Completed Processes</h2>
-                <p>Total: {listCompletedProcesses.length}</p>
-                {/* <ul>
-                  {listCompletedProcesses.map((process) => (
-                    <li key={process.id}>
-                      ID: {process.id}, State: {process.state}
-                    </li>
-                  ))}
-                </ul> */}
-              </div>
-            </div>
-            <SimulatorProcessControl processes={processes} />
+            <SimulatorProcesses title="Process Control" processes={processes} />
           </div>
         </div>
       </div>

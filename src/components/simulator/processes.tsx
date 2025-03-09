@@ -12,10 +12,11 @@ import {
 } from "../ui/table";
 
 type ProcessControlProps = {
+  title: string;
   processes: Process[];
 };
 
-export function SimulatorProcessControl({ processes }: ProcessControlProps) {
+export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
   const getStateStyles = (state: ProcessState) => {
     switch (state) {
       case ProcessState.RUNNING:
@@ -32,7 +33,7 @@ export function SimulatorProcessControl({ processes }: ProcessControlProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Process Control</CardTitle>
+        <CardTitle className="text-xl font-bold">{title}</CardTitle>
       </CardHeader>
       <CardContent className="overflow-auto w-full">
         <div className="overflow-auto max-h-[calc(100vh-250px)] max-w-full">
