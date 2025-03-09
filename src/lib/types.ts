@@ -14,7 +14,7 @@ export enum SimulatorState {
   STOPPED = "STOPPED",
 }
 
-type AlgorithmConfig = {
+export type AlgorithmConfig = {
   type: SimulatorAlgorithm;
   quantum: number;
 };
