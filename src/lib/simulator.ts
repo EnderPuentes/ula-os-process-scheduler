@@ -1,4 +1,3 @@
-import { SchedulerProcessAlgorithms } from "./algorithms";
 import {
   Process,
   ProcessState,
@@ -12,12 +11,15 @@ import {
  * It manages the lifecycle of processes and simulates scheduling algorithms.
  */
 export class ProcessSchedulerSimulator {
-  private algorithms: SchedulerProcessAlgorithms;
-
   private state: SimulatorState = SimulatorState.STOPPED;
 
   private processes: Process[] = [];
   private currentProcess: Process | null = null;
+
+  private queueReadyProcesses: Process[] = [];
+  private queueBlockedProcesses: Process[] = [];
+
+  private listCompletedProcesses: Process[] = [];
 
   private timer: NodeJS.Timeout | null = null;
   private currentTick: number = 0;
@@ -44,40 +46,44 @@ export class ProcessSchedulerSimulator {
    */
   constructor(config?: SimulatorConfig | null) {
     this.config = config || this.config;
-    this.algorithms = new SchedulerProcessAlgorithms();
   }
 
   /**
    * Generates a random process with random burst time and priority.
    * @returns {Process} The generated process.
    */
-  private generateRandomProcess(): Process {
-    const executionTick =
-      Math.floor(Math.random() * this.config.processes.maxBurstTick) + 1;
+  private generateRandomProcesses() {
+    for (let i = 0; i < Math.random() * 5; i++) {
+      // Generate a random number between 0 and 1
+      if (Math.random() < 1) {
+        // Generate a random priority between 1 and maxPriority
+        const priority =
+          Math.floor(Math.random() * this.config.processes.maxPriority) + 1;
 
-    const newProcess: Process = {
-      id: this.processes.length + 1,
-      arrivalTick: this.currentTick,
-      burstTick: executionTick,
-      remainingTick: executionTick,
-      priority:
-        Math.floor(Math.random() * this.config.processes.maxPriority) + 1,
-      state: ProcessState.READY,
-      waitingTick: 0,
-      turnaroundTick: 0,
-      responseTick: null,
-      blockingTick: 0,
-      completionTick: null,
-    };
-    return newProcess;
-  }
+        // Generate a random burst time between 1 and maxBurstTick
+        const executionTick =
+          Math.floor(Math.random() * this.config.processes.maxBurstTick) + 1;
 
-  /**
-   * Subscribes a listener to be notified of simulator updates.
-   * @param {() => void} listener - The listener function to be called on updates.
-   */
-  public subscribe(listener: () => void) {
-    this.listeners.push(listener);
+        this.processes.push({
+          id: this.processes.length + 1,
+          arrivalTick: this.currentTick,
+          burstTick: executionTick,
+          remainingTick: executionTick,
+          priority: priority,
+          state: ProcessState.READY,
+          waitingTick: 0,
+          turnaroundTick: 0,
+          responseTick: null,
+          blockingTick: 0,
+          completionTick: null,
+          executionCount: 0,
+        });
+
+        this.notify();
+      }
+    }
+
+    this.syncQueueReadyProcesses();
   }
 
   /**
@@ -88,97 +94,24 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
-   * Starts the simulation, generating processes and scheduling them.
+   * Updates a specific process in the process list.
+   * @param {Process} process - The process to update.
    */
-  public start() {
-    if (this.state === SimulatorState.STOPPED) {
-      this.state = SimulatorState.RUNNING;
-
-      this.processes.push(this.generateRandomProcess());
-      this.notify();
-
-      this.timer = setInterval(() => {
-        this.scheduleProcess();
-        this.currentTick++;
-        this.updateProcesses();
-
-        // Generate random processes with a 25% chance 1-5 processes
-        for (let i = 0; i < Math.random() * 5; i++) {
-          if (Math.random() < 0.25) {
-            this.processes.push(this.generateRandomProcess());
-          }
-        }
-
-        this.notify();
-      }, this.config.processor.tickSpeed);
-    }
-  }
-
-  /**
-   * Restarts the simulation from a paused state.
-   */
-  public restart() {
-    if (this.state === SimulatorState.PAUSED) {
-      this.state = SimulatorState.RUNNING;
-
-      this.timer = setInterval(() => {
-        this.scheduleProcess();
-        this.currentTick++;
-        this.updateProcesses();
-        this.notify();
-      }, this.config.processor.tickSpeed);
-    }
-  }
-
-  /**
-   * Pauses the simulation.
-   */
-  public pause() {
-    if (this.state === SimulatorState.RUNNING) {
-      this.state = SimulatorState.PAUSED;
-
-      if (this.timer) {
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-
-      this.notify();
-    }
-  }
-
-  /**
-   * Resets the simulation to its initial state.
-   */
-  public reset() {
-    if (this.state === SimulatorState.PAUSED) {
-      this.state = SimulatorState.STOPPED;
-
-      if (this.timer) {
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-
-      this.processes = [];
-      this.currentTick = 0;
-      this.currentProcess = null;
-      this.notify();
-    }
+  private syncProcess(process: Process) {
+    const index = this.processes.findIndex((p) => p.id === process.id);
+    this.processes[index] = process;
   }
 
   /**
    * Updates the state of all processes based on their current state.
    */
-  private updateProcesses() {
+  private syncProcesses() {
     this.processes
       .filter((process) => process.state !== ProcessState.COMPLETED)
       .forEach((process) => {
         switch (process.state) {
           case ProcessState.RUNNING:
             process.remainingTick--;
-            if (process.remainingTick <= 0) {
-              process.state = ProcessState.COMPLETED;
-              process.completionTick = this.currentTick;
-            }
             process.turnaroundTick++;
             break;
           case ProcessState.READY:
@@ -187,52 +120,389 @@ export class ProcessSchedulerSimulator {
             break;
         }
       });
+
+    this.syncQueueReadyProcesses();
   }
 
   /**
-   * Updates a specific process in the process list.
-   * @param {Process} process - The process to update.
+   * Syncs the queue of ready processes.
    */
-  private updateProcess(process: Process) {
-    this.processes.forEach((p) => {
-      if (p.id === process.id) {
-        p = process;
+
+  private syncQueueReadyProcesses() {
+    this.queueReadyProcesses = this.processes.filter(
+      (process) => process.state === ProcessState.READY
+    );
+  }
+
+  /**
+   * Schedules the next process to run based on the first come first served algorithm.
+   */
+  private scheduleProcessFirstComeFirstServed() {
+    // If the current process is running, return
+    if (
+      this.currentProcess &&
+      this.currentProcess.state === ProcessState.RUNNING
+    ) {
+      return;
+    }
+
+    // If there are no processes, return
+    if (this.queueReadyProcesses.length === 0) {
+      this.currentProcess = null;
+      return;
+    }
+
+    // Get the next process to run
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    if (nextProcess) {
+      // If there is no current process, set the next process as the current process
+      if (!this.currentProcess) {
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      } else {
+        // Complete the current process
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+
+        // Set the next process as the current process
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
       }
+    }
+
+    this.notify();
+  }
+
+  /**
+   * Schedules the next process to run based on the shortest job first algorithm.
+   */
+  private scheduleProcessShortestJobFirst() {
+    // If the current process is running, return
+    if (
+      this.currentProcess &&
+      this.currentProcess.state === ProcessState.RUNNING
+    ) {
+      return;
+    }
+
+    // If there are no processes, return
+    if (this.queueReadyProcesses.length === 0) {
+      this.currentProcess = null;
+      return;
+    }
+
+    // Order the processes by burst time
+    this.queueReadyProcesses = this.queueReadyProcesses.sort(
+      (a, b) => a.burstTick - b.burstTick
+    );
+
+    // Get the next process to run
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    if (nextProcess) {
+      // If there is no current process, set the next process as the current process
+      if (!this.currentProcess) {
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      } else {
+        // Mark the current process as completed and update its state
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+
+        // Set the next process as the current process
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+    }
+
+    this.notify();
+  }
+
+  /**
+   * Schedules the next process to run based on the priority algorithm.
+   */
+  private scheduleProcessNonExpulsivePriority() {
+    // If the current process is running, return
+    if (
+      this.currentProcess &&
+      this.currentProcess.state === ProcessState.RUNNING
+    ) {
+      return;
+    }
+
+    // If there are no processes, return
+    if (this.queueReadyProcesses.length === 0) {
+      this.currentProcess = null;
+      return;
+    }
+
+    // Order the processes by priority
+    this.queueReadyProcesses = this.queueReadyProcesses.sort(
+      (a, b) => a.priority - b.priority
+    );
+
+    // Get the next process to run
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    if (nextProcess) {
+      // If there is no current process, set the next process as the current process
+      if (!this.currentProcess) {
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      } else {
+        // Complete the current process
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+
+        // Set the next process as the current process
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+    }
+
+    this.notify();
+  }
+
+  /**
+   * Schedules the next process to run based on the random algorithm.
+   */
+  private scheduleProcessNonExpulsiveRandom() {
+    // If the current process is running, return
+    if (
+      this.currentProcess &&
+      this.currentProcess.state === ProcessState.RUNNING
+    ) {
+      return;
+    }
+
+    // If there are no processes, return
+    if (this.queueReadyProcesses.length === 0) {
+      this.currentProcess = null;
+      return;
+    }
+
+    // Get a random process from the queue of ready processes
+    const nextProcess =
+      this.queueReadyProcesses[
+        Math.floor(Math.random() * this.queueReadyProcesses.length)
+      ] || null;
+
+    if (nextProcess) {
+      // If there is no current process, set the next process as the current process
+      if (!this.currentProcess) {
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+      } else {
+        // Complete the current process
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+
+        // Set the next process as the current process
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+        };
+
+        // Sync the new current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+    }
+
+    this.notify();
+  }
+
+  private scheduleProcessRoundRobin() {
+    // If there is no current process, set the next process as the current process
+
+    if (!this.currentProcess) {
+      const initialProcess = this.queueReadyProcesses.shift() || null;
+
+      if (initialProcess) {
+        // Set the initial process as the current process
+        console.log("Inicializar", JSON.stringify(initialProcess));
+        this.currentProcess = {
+          ...initialProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.currentTick,
+          executionCount: initialProcess.executionCount + 1,
+        };
+        initialProcess.executionCount++;
+
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      }
+      return;
+    }
+
+    console.log("Ya existe un proceso corriendo");
+
+    // If the current process is running and has not exceeded its quantum, return
+    if (
+      this.currentProcess &&
+      this.currentProcess.state === ProcessState.RUNNING &&
+      this.currentProcess.remainingTick > 0 &&
+      this.currentProcess.burstTick - this.currentProcess.remainingTick <=
+        this.config.algorithm.quantum
+    ) {
+      return;
+    }
+
+    console.log("El proceso corriendo ya excedio el quantum");
+
+    // Order the processes by arrival time and execution count
+    this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+      return (
+        a.executionCount - b.executionCount || a.arrivalTick - b.arrivalTick
+      );
     });
+
+    // Get the next process to run
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    console.log("El muñeco llego hasta aqui bandera 3");
+
+    if (nextProcess) {
+      if (this.currentProcess.remainingTick > 0) {
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.READY,
+          responseTick: this.currentTick,
+        };
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+      } else {
+        this.currentProcess = {
+          ...this.currentProcess,
+          state: ProcessState.COMPLETED,
+          completionTick: this.currentTick,
+        };
+        // Sync the current process to the list of processes
+        this.syncProcess(this.currentProcess);
+        // Add the completed process to the list of completed processes
+        this.listCompletedProcesses.push(this.currentProcess);
+      }
+      console.log("El muñeco llego hasta aqui bandera 4");
+      console.log(nextProcess);
+      // Set the next process as the current process
+      this.currentProcess = {
+        ...nextProcess,
+        state: ProcessState.RUNNING,
+        responseTick: this.currentTick,
+        executionCount: nextProcess.executionCount + 1,
+      };
+
+      // Sync the new current process to the list of processes
+      this.syncProcess(this.currentProcess);
+    }
+
+    this.notify();
   }
 
   /**
    * Schedules the next process to run based on the current algorithm.
    */
-  private scheduleProcess(): void {
-    // Get the next process to run
-    const nextProcess = this.algorithms.getAlgorithm(this.config.algorithm)(
-      this.processes,
-      this.currentProcess
-    );
-
-    if (nextProcess) {
-      // If the current process is running, set it to blocked
-      if (this.currentProcess?.state === ProcessState.RUNNING) {
-        this.updateProcess({
-          ...this.currentProcess,
-          state: ProcessState.BLOCKED,
-        });
-      }
-
-      // Set the current process to the next process
-      this.currentProcess = nextProcess;
-
-      // Update the state of the current process
-      if (this.currentProcess) {
-        this.currentProcess.state = ProcessState.RUNNING;
-        this.currentProcess.responseTick = this.currentTick;
-        this.updateProcess(this.currentProcess);
-      }
-
-      // Notify the listeners
-      this.notify();
+  private scheduleProcess() {
+    console.log(this.config.algorithm.type);
+    // Schedule the next process (if applicable)
+    switch (this.config.algorithm.type) {
+      case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
+        this.scheduleProcessFirstComeFirstServed();
+        break;
+      case SimulatorAlgorithm.NON_EXPULSIVE_SJF:
+        this.scheduleProcessShortestJobFirst();
+        break;
+      case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
+        this.scheduleProcessNonExpulsivePriority();
+        break;
+      case SimulatorAlgorithm.NON_EXPULSIVE_RANDOM:
+        this.scheduleProcessNonExpulsiveRandom();
+        break;
+      case SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN:
+        this.scheduleProcessRoundRobin();
+        break;
+      default:
+        throw new Error("Invalid algorithm type");
     }
+
+    // Sync the processes
+    this.syncProcesses();
+
+    this.notify();
   }
 
   /**
@@ -281,5 +551,111 @@ export class ProcessSchedulerSimulator {
    */
   public updateConfig(config: SimulatorConfig) {
     this.config = config;
+  }
+
+  /**
+   * Gets the list of processes that are ready to be executed.
+   * @returns {Process[]} The list of ready processes.
+   */
+  public getQueueReadyProcesses(): Process[] {
+    return this.queueReadyProcesses;
+  }
+
+  /**
+   * Gets the list of processes that are currently blocked.
+   * @returns {Process[]} The list of blocked processes.
+   */
+  public getQueueBlockedProcesses(): Process[] {
+    return this.queueBlockedProcesses;
+  }
+
+  /**
+   * Gets the list of processes that have been completed.
+   * @returns {Process[]} The list of completed processes.
+   */
+  public getListCompletedProcesses(): Process[] {
+    return this.listCompletedProcesses;
+  }
+
+  /**
+   * Starts the simulation, generating processes and scheduling them.
+   */
+  public start() {
+    if (this.state === SimulatorState.STOPPED) {
+      this.state = SimulatorState.RUNNING;
+
+      this.notify();
+
+      this.timer = setInterval(() => {
+        this.generateRandomProcesses();
+
+        this.scheduleProcess();
+        this.currentTick++;
+
+        this.notify();
+      }, this.config.processor.tickSpeed);
+    }
+  }
+
+  /**
+   * Restarts the simulation from a paused state.
+   */
+  public restart() {
+    if (this.state === SimulatorState.PAUSED) {
+      this.state = SimulatorState.RUNNING;
+
+      this.timer = setInterval(() => {
+        this.generateRandomProcesses();
+
+        this.scheduleProcess();
+        this.currentTick++;
+      }, this.config.processor.tickSpeed);
+    }
+  }
+
+  /**
+   * Pauses the simulation.
+   */
+  public pause() {
+    if (this.state === SimulatorState.RUNNING) {
+      this.state = SimulatorState.PAUSED;
+
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+
+      this.notify();
+    }
+  }
+
+  /**
+   * Resets the simulation to its initial state.
+   */
+  public reset() {
+    if (this.state === SimulatorState.PAUSED) {
+      this.state = SimulatorState.STOPPED;
+
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+
+      this.processes = [];
+      this.currentTick = 0;
+      this.currentProcess = null;
+      this.queueReadyProcesses = [];
+      this.queueBlockedProcesses = [];
+      this.listCompletedProcesses = [];
+      this.notify();
+    }
+  }
+
+  /**
+   * Subscribes a listener to be notified of simulator updates.
+   * @param {() => void} listener - The listener function to be called on updates.
+   */
+  public subscribe(listener: () => void) {
+    this.listeners.push(listener);
   }
 }
