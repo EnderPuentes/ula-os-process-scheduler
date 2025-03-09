@@ -207,7 +207,7 @@ export class ProcessSchedulerSimulator {
   private scheduleProcess(): void {
     // Get the next process to run
     const nextProcess = this.algorithms.getAlgorithm(
-      this.config.algorithm.type
+      this.config.algorithm
     )(this.processes, this.currentProcess);
 
     if (nextProcess) {
