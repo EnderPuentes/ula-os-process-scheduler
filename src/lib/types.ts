@@ -1,8 +1,8 @@
 export enum SimulatorAlgorithm {
-  FCFS = "FCFS", // First Come First Served
-  SJF = "SJF", // Shortest Job First
-  RANDOM = "RANDOM", // Random
-  PRIORITY_NON_EXPULSIVE = "PRIORITY_NON_EXPULSIVE", // Priority Non Expulsive
+  NON_EXPULSIVE_FCFS = "NON_EXPULSIVE_FCFS", // First Come First Served
+  NON_EXPULSIVE_SJF = "NON_EXPULSIVE_SJF", // Shortest Job First
+  NON_EXPULSIVE_RANDOM = "NON_EXPULSIVE_RANDOM", // Random
+  NON_EXPULSIVE_PRIORITY = "NON_EXPULSIVE_PRIORITY", // Priority Non Expulsive
   ROUND_ROBIN = "ROUND_ROBIN", // Round Robin
   SRTF = "SRTF", // Shortest Remaining Time First
   PRIORITY_EXPULSIVE = "PRIORITY_EXPULSIVE", // Priority Expulsive
