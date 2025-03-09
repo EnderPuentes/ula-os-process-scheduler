@@ -24,7 +24,7 @@ export class ProcessSchedulerSimulator {
 
   private config: SimulatorConfig = {
     algorithm: {
-      type: SimulatorAlgorithm.FCFS,
+      type: SimulatorAlgorithm.NON_EXPULSIVE_FCFS,
       quantum: 10,
     },
     processes: {
@@ -206,9 +206,10 @@ export class ProcessSchedulerSimulator {
    */
   private scheduleProcess(): void {
     // Get the next process to run
-    const nextProcess = this.algorithms.getAlgorithm(
-      this.config.algorithm
-    )(this.processes, this.currentProcess);
+    const nextProcess = this.algorithms.getAlgorithm(this.config.algorithm)(
+      this.processes,
+      this.currentProcess
+    );
 
     if (nextProcess) {
       // If the current process is running, set it to blocked
