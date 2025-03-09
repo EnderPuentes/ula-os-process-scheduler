@@ -62,6 +62,9 @@ export function SimulatorConfiguration({
   const [algorithm, setAlgorithm] = useState(config.algorithm);
 
   // Processes
+  const [maxProcesses, setMaxProcesses] = useState(
+    config.processes.maxProcesses
+  );
   const [maxBurstTick, setMaxBurstTick] = useState(
     config.processes.maxBurstTick
   );
@@ -143,6 +146,20 @@ export function SimulatorConfiguration({
         <Separator />
         <div className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">Processes</h2>
+          <SliderControl
+            label="Max Processes"
+            value={maxProcesses}
+            min={1}
+            max={100}
+            disabled={simulatorState !== SimulatorState.STOPPED}
+            onChange={(value) => {
+              setMaxProcesses(value);
+              updateConfig({
+                ...config,
+                processes: { ...config.processes, maxProcesses: value },
+              });
+            }}
+          />
           <SliderControl
             label="Max Priority"
             value={maxPriority}
