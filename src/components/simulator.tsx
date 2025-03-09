@@ -48,6 +48,7 @@ export function SimulatorVisualizer() {
             />
             {config && (
               <SimulatorConfiguration
+                simulatorState={state}
                 config={config}
                 updateConfig={(newConfig: SimulatorConfig) =>
                   simulator?.updateConfig(newConfig)

@@ -1,6 +1,10 @@
 "use client";
 
-import { SimulatorAlgorithm, SimulatorConfig } from "@/lib/types";
+import {
+  SimulatorAlgorithm,
+  SimulatorConfig,
+  SimulatorState,
+} from "@/lib/types";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
@@ -17,28 +21,25 @@ import { Slider } from "../ui/slider";
 type SliderControlProps = {
   label: string;
   value: number;
-  onChange: (value: number) => void;
   min?: number;
   max: number;
   step?: number;
+  disabled?: boolean;
+  onChange: (value: number) => void;
 };
 
 const SliderControl = ({
   label,
-  value,
   onChange,
-  min = 1,
-  max,
-  step = 1,
+  value,
+  ...props
 }: SliderControlProps) => (
   <div className="flex flex-col gap-2">
     <Label className="text-sm font-medium">{label}</Label>
     <Slider
-      min={min}
-      max={max}
+      {...props}
       value={[value]}
       onValueChange={(val) => onChange(val[0])}
-      step={step}
       className="w-full"
     />
     <p className="text-sm">{value}</p>
@@ -48,11 +49,13 @@ const SliderControl = ({
 interface SimulatorConfigurationProps {
   config: SimulatorConfig;
   updateConfig: (config: SimulatorConfig) => void;
+  simulatorState: SimulatorState;
 }
 
 export function SimulatorConfiguration({
   config,
   updateConfig,
+  simulatorState,
 }: SimulatorConfigurationProps) {
   // Algorithm
   const [quantum, setQuantum] = useState(config.algorithm.quantum);
@@ -76,6 +79,7 @@ export function SimulatorConfiguration({
         <div className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">Algorithm</h2>
           <Select
+            disabled={simulatorState !== SimulatorState.STOPPED}
             value={algorithm.type}
             onValueChange={(value) => {
               setAlgorithm({ type: value as SimulatorAlgorithm, quantum });
@@ -104,7 +108,9 @@ export function SimulatorConfiguration({
             <SliderControl
               label="Quantum"
               value={quantum}
+              min={1}
               max={50}
+              disabled={simulatorState !== SimulatorState.STOPPED}
               onChange={(value) => {
                 setQuantum(value);
                 updateConfig({
@@ -124,6 +130,7 @@ export function SimulatorConfiguration({
             min={100}
             max={5000}
             step={100}
+            disabled={simulatorState !== SimulatorState.STOPPED}
             onChange={(value) => {
               setTickSpeed(value);
               updateConfig({
@@ -139,7 +146,9 @@ export function SimulatorConfiguration({
           <SliderControl
             label="Max Priority"
             value={maxPriority}
+            min={1}
             max={10}
+            disabled={simulatorState !== SimulatorState.STOPPED}
             onChange={(value) => {
               setMaxPriority(value);
               updateConfig({
@@ -151,7 +160,9 @@ export function SimulatorConfiguration({
           <SliderControl
             label="Max Burst Tick"
             value={maxBurstTick}
+            min={1}
             max={20}
+            disabled={simulatorState !== SimulatorState.STOPPED}
             onChange={(value) => {
               setMaxBurstTick(value);
               updateConfig({
