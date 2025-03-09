@@ -19,7 +19,6 @@ export class SchedulerProcessAlgorithms {
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
-    console.log("FCFS", processes, currentProcess);
     // If there are no processes, return null
     if (processes.length === 0) return null;
     // If the current process is running, return null
@@ -45,7 +44,6 @@ export class SchedulerProcessAlgorithms {
     processes: Process[],
     currentProcess: Process | null
   ): Process | null {
-    console.log("SJF", processes, currentProcess);
     // If there are no processes, return null
     if (processes.length === 0) return null;
     // If the current process is running, return null
@@ -61,6 +59,32 @@ export class SchedulerProcessAlgorithms {
     // Return the first process in the sorted list
     return sortedProcesses[0];
   }
+
+  /**
+   * Random scheduling algorithm
+   * @param processes - Array of processes to be scheduled
+   * @returns The next process to run
+   */
+  private RANDOM(
+    processes: Process[],
+    currentProcess: Process | null
+  ): Process | null {
+    // If there are no processes, return null
+    if (processes.length === 0) return null;
+    // If the current process is running, return null
+    if (currentProcess && currentProcess.state !== ProcessState.COMPLETED) {
+      return null;
+    }
+
+    // Get a random process from the list
+    const filteredProcesses = processes.filter(
+      (process) => process.state === ProcessState.READY
+    );
+    const randomProcess =
+      filteredProcesses[Math.floor(Math.random() * filteredProcesses.length)];
+
+    return randomProcess;
+  }
   /**
    * Get the algorithm
    * @param algorithm - The algorithm to get
@@ -73,8 +97,10 @@ export class SchedulerProcessAlgorithms {
         return this.FCFS;
       case SimulatorAlgorithm.SJF:
         return this.SJF;
+      case SimulatorAlgorithm.RANDOM:
+        return this.RANDOM;
       default:
-        throw new Error(`Algorithm ${algorithm} not found`);
+        throw new Error(`Algorithm ${algorithm.type} not found`);
     }
   }
 }
