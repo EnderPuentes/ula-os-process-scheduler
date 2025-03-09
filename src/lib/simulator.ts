@@ -32,6 +32,7 @@ export class ProcessSchedulerSimulator {
     processes: {
       maxPriority: 5,
       maxBurstTick: 10,
+      maxProcesses: 50,
     },
     processor: {
       tickSpeed: 1000,
@@ -53,37 +54,32 @@ export class ProcessSchedulerSimulator {
    * @returns {Process} The generated process.
    */
   private generateRandomProcesses() {
-    for (let i = 0; i < Math.random() * 5; i++) {
-      // Generate a random number between 0 and 1
-      if (Math.random() < 1) {
-        // Generate a random priority between 1 and maxPriority
-        const priority =
-          Math.floor(Math.random() * this.config.processes.maxPriority) + 1;
+    for (let i = 0; i < this.config.processes.maxProcesses; i++) {
+      // Generate a random priority between 1 and maxPriority
+      const priority =
+        Math.floor(Math.random() * this.config.processes.maxPriority) + 1;
 
-        // Generate a random burst time between 1 and maxBurstTick
-        const executionTick =
-          Math.floor(Math.random() * this.config.processes.maxBurstTick) + 1;
+      // Generate a random burst time between 1 and maxBurstTick
+      const executionTick =
+        Math.floor(Math.random() * this.config.processes.maxBurstTick) + 1;
 
-        this.processes.push({
-          id: this.processes.length + 1,
-          arrivalTick: this.currentTick,
-          burstTick: executionTick,
-          remainingTick: executionTick,
-          priority: priority,
-          state: ProcessState.READY,
-          waitingTick: 0,
-          turnaroundTick: 0,
-          responseTick: null,
-          blockingTick: 0,
-          completionTick: null,
-          executionCount: 0,
-        });
+      this.processes.push({
+        id: this.processes.length + 1,
+        arrivalTick: this.currentTick,
+        burstTick: executionTick,
+        remainingTick: executionTick,
+        priority: priority,
+        state: ProcessState.READY,
+        waitingTick: 0,
+        turnaroundTick: 0,
+        responseTick: null,
+        blockingTick: 0,
+        completionTick: null,
+        executionCount: 0,
+      });
 
-        this.notify();
-      }
+      this.notify();
     }
-
-    this.syncQueueReadyProcesses();
   }
 
   /**
@@ -394,7 +390,6 @@ export class ProcessSchedulerSimulator {
 
       if (initialProcess) {
         // Set the initial process as the current process
-        console.log("Inicializar", JSON.stringify(initialProcess));
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
@@ -409,20 +404,16 @@ export class ProcessSchedulerSimulator {
       return;
     }
 
-    console.log("Ya existe un proceso corriendo");
-
     // If the current process is running and has not exceeded its quantum, return
     if (
       this.currentProcess &&
       this.currentProcess.state === ProcessState.RUNNING &&
       this.currentProcess.remainingTick > 0 &&
-      this.currentProcess.burstTick - this.currentProcess.remainingTick <=
-        this.config.algorithm.quantum
+      this.currentProcess.burstTick - this.currentProcess.remainingTick <
+        this.config.algorithm.quantum * this.currentProcess.executionCount
     ) {
       return;
     }
-
-    console.log("El proceso corriendo ya excedio el quantum");
 
     // Order the processes by arrival time and execution count
     this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
@@ -433,8 +424,6 @@ export class ProcessSchedulerSimulator {
 
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
-
-    console.log("El muñeco llego hasta aqui bandera 3");
 
     if (nextProcess) {
       if (this.currentProcess.remainingTick > 0) {
@@ -456,8 +445,7 @@ export class ProcessSchedulerSimulator {
         // Add the completed process to the list of completed processes
         this.listCompletedProcesses.push(this.currentProcess);
       }
-      console.log("El muñeco llego hasta aqui bandera 4");
-      console.log(nextProcess);
+
       // Set the next process as the current process
       this.currentProcess = {
         ...nextProcess,
@@ -468,6 +456,24 @@ export class ProcessSchedulerSimulator {
 
       // Sync the new current process to the list of processes
       this.syncProcess(this.currentProcess);
+    } else {
+      this.currentProcess = {
+        ...this.currentProcess,
+        state: ProcessState.COMPLETED,
+        completionTick: this.currentTick,
+      };
+
+      // Sync the current process to the list of processes
+      this.syncProcess(this.currentProcess);
+
+      // Add the completed process to the list of completed processes
+      this.listCompletedProcesses.push(this.currentProcess);
+
+      // Set the current process to null
+      this.currentProcess = null;
+
+      // Stop the simulation
+      this.stop();
     }
 
     this.notify();
@@ -551,6 +557,7 @@ export class ProcessSchedulerSimulator {
    */
   public updateConfig(config: SimulatorConfig) {
     this.config = config;
+    this.notify();
   }
 
   /**
@@ -584,16 +591,15 @@ export class ProcessSchedulerSimulator {
     if (this.state === SimulatorState.STOPPED) {
       this.state = SimulatorState.RUNNING;
 
-      this.notify();
+      this.generateRandomProcesses();
 
       this.timer = setInterval(() => {
-        this.generateRandomProcesses();
-
         this.scheduleProcess();
         this.currentTick++;
-
         this.notify();
       }, this.config.processor.tickSpeed);
+
+      this.notify();
     }
   }
 
@@ -605,10 +611,10 @@ export class ProcessSchedulerSimulator {
       this.state = SimulatorState.RUNNING;
 
       this.timer = setInterval(() => {
-        this.generateRandomProcesses();
-
         this.scheduleProcess();
         this.currentTick++;
+
+        this.notify();
       }, this.config.processor.tickSpeed);
     }
   }
@@ -647,6 +653,20 @@ export class ProcessSchedulerSimulator {
       this.queueReadyProcesses = [];
       this.queueBlockedProcesses = [];
       this.listCompletedProcesses = [];
+
+      this.notify();
+    }
+  }
+
+  public stop() {
+    if (this.state === SimulatorState.RUNNING) {
+      this.state = SimulatorState.STOPPED;
+
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+
       this.notify();
     }
   }

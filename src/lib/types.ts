@@ -25,6 +25,7 @@ export type AlgorithmConfig = {
 };
 
 type ProcessConfig = {
+  maxProcesses: number;
   maxPriority: number;
   maxBurstTick: number;
 };
