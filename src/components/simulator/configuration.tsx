@@ -104,12 +104,12 @@ export function SimulatorConfiguration({
               ))}
             </SelectContent>
           </Select>
-          {algorithm.type === SimulatorAlgorithm.ROUND_ROBIN && (
+          {algorithm.type === SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN && (
             <SliderControl
               label="Quantum"
               value={quantum}
               min={1}
-              max={50}
+              max={20}
               disabled={simulatorState !== SimulatorState.STOPPED}
               onChange={(value) => {
                 setQuantum(value);
