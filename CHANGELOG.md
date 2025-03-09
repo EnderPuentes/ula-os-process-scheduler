@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.3.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.2.0...0.3.0) (2025-03-09)
+
+
+### Features
+
+* add simulator state to configuration component for runtime control ([ba68897](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/ba6889746dea5546289093a9dfcc3606ab5cc009))
+
 # 0.2.0 (2025-03-09)
 
 
