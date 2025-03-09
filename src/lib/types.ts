@@ -1,8 +1,3 @@
-export type StateTransitionResult = {
-  success: boolean;
-  error?: string;
-};
-
 export enum SimulatorAlgorithm {
   NON_EXPULSIVE_FCFS = "NON_EXPULSIVE_FCFS", // First Come First Served
   NON_EXPULSIVE_SJF = "NON_EXPULSIVE_SJF", // Shortest Job First
