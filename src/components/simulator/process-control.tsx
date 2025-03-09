@@ -50,6 +50,7 @@ export function SimulatorProcessControl({ processes }: ProcessControlProps) {
                 <TableHead className="text-center">Response Tick</TableHead>
                 <TableHead className="text-center">Blocking Tick</TableHead>
                 <TableHead className="text-center">Completion Tick</TableHead>
+                <TableHead className="text-center">Execution Count</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -90,6 +91,9 @@ export function SimulatorProcessControl({ processes }: ProcessControlProps) {
                     </TableCell>
                     <TableCell className="text-center">
                       {process.completionTick}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {process.executionCount}
                     </TableCell>
                   </TableRow>
                 ))
