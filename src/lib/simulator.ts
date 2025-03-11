@@ -775,6 +775,13 @@ export class ProcessSchedulerSimulator {
     if (this.state === SimulatorState.STOPPED) {
       this.state = SimulatorState.RUNNING;
 
+      this.processes = [];
+      this.currentTick = 0;
+      this.currentProcess = null;
+      this.queueReadyProcesses = [];
+      this.queueBlockedProcesses = [];
+      this.listCompletedProcesses = [];
+
       this.generateRandomProcesses();
 
       this.timer = setInterval(() => {
@@ -844,7 +851,7 @@ export class ProcessSchedulerSimulator {
 
   public stop() {
     if (this.state === SimulatorState.RUNNING) {
-      this.state = SimulatorState.COMPLETED;
+      this.state = SimulatorState.STOPPED;
 
       if (this.timer) {
         clearInterval(this.timer);
