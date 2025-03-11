@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.4.1](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.4.0...0.4.1) (2025-03-11)
+
 # [0.4.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.3.0...0.4.0) (2025-03-11)
 
 
