@@ -76,7 +76,7 @@ export function SimulatorMonitor({
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle className="text-4xl font-bold text-center">
+          <CardTitle className="text-2xl font-bold text-center">
             {currentProcess ? "ACTIVE" : "INACTIVE"}
           </CardTitle>
         </CardHeader>

@@ -59,8 +59,9 @@ export type Process = {
 export type Statistics = {
   totalTime: number;
   totalTicks: number;
-  averageWaitingTime: number;
-  averageBlockingTime: number;
-  averageExecutionTime: number;
+  averageWaitingTicks: number;
+  averageBlockingTicks: number;
+  averageExecutionTicks: number;
   totalProcesses: number;
+  cpuUsage: number;
 };

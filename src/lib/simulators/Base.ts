@@ -242,7 +242,7 @@ export abstract class SimulatorBase {
     const totalTime = this.totalTicks * this.config.cpu.tickSpeed;
     const totalProcesses = this.processes.length;
 
-    const averageWaitingTime =
+    const averageWaitingTicks =
       this.listCompletedProcesses.length > 0
         ? this.listCompletedProcesses.reduce(
             (acc, process) =>
@@ -254,7 +254,7 @@ export abstract class SimulatorBase {
           ) / this.listCompletedProcesses.length
         : 0;
 
-    const averageBlockingTime =
+    const averageBlockingTicks =
       this.listCompletedProcesses.length > 0
         ? this.listCompletedProcesses.reduce(
             (acc, process) => acc + (process.blockingTick ?? 0),
@@ -262,7 +262,7 @@ export abstract class SimulatorBase {
           ) / this.listCompletedProcesses.length
         : 0;
 
-    const averageExecutionTime =
+    const averageExecutionTicks =
       this.listCompletedProcesses.length > 0
         ? this.listCompletedProcesses.reduce(
             (acc, process) => acc + (process.burstTick ?? 0),
@@ -274,9 +274,10 @@ export abstract class SimulatorBase {
       totalTime,
       totalTicks,
       totalProcesses,
-      averageWaitingTime,
-      averageBlockingTime,
-      averageExecutionTime,
+      averageWaitingTicks,
+      averageBlockingTicks,
+      averageExecutionTicks,
+      cpuUsage: this.cpuUse,
     };
   }
 

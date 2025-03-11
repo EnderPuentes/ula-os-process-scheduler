@@ -49,17 +49,39 @@ export default function SimulatorHome() {
     Process[]
   >([]);
 
-  const [cpuUsage, setCpuUsage] = useState<number>(0);
   const [statistics, setStatistics] = useState<Statistics>({
     totalTime: 0,
     totalTicks: 0,
-    averageWaitingTime: 0,
-    averageBlockingTime: 0,
-    averageExecutionTime: 0,
+    averageWaitingTicks: 0,
+    averageBlockingTicks: 0,
+    averageExecutionTicks: 0,
     totalProcesses: 0,
+    cpuUsage: 0,
   });
 
   const [config, setConfig] = useState<SimulatorConfig | null>(null);
+
+  const handlerSubscribe =
+    (
+      simulatorInstance:
+        | SimulatorNonExpulsiveFirstComeFirstServed
+        | SimulatorNonExpulsiveShortestJobFirst
+        | SimulatorNonExpulsivePriority
+        | SimulatorNonExpulsiveRandom
+        | SimulatorExpulsiveRoundRobin
+        | SimulatorExpulsiveShortestRemainingTimeFirst
+        | SimulatorExpulsivePriority
+    ) =>
+    () => {
+      setState(simulatorInstance.getCurrentState());
+      setCurrentProcess(simulatorInstance.getCurrentProcess());
+      setProcesses(simulatorInstance.getProcesses());
+      setQueueReadyProcesses(simulatorInstance.getQueueReadyProcesses());
+      setQueueBlockedProcesses(simulatorInstance.getQueueBlockedProcesses());
+      setListCompletedProcesses(simulatorInstance.getListCompletedProcesses());
+      setStatistics(simulatorInstance.getStatistics());
+      setConfig(simulatorInstance.getConfig());
+    };
 
   useEffect(() => {
     const simulatorInstance = getSimulatorAlgorithm(simulatorAlgorithm);
@@ -67,17 +89,7 @@ export default function SimulatorHome() {
     setSimulator(simulatorInstance);
     setConfig(simulatorInstance?.getConfig() || null);
 
-    simulatorInstance.subscribe(() => {
-      setState(simulatorInstance.getCurrentState());
-      setCurrentProcess(simulatorInstance.getCurrentProcess());
-      setProcesses(simulatorInstance.getProcesses());
-      setQueueReadyProcesses(simulatorInstance.getQueueReadyProcesses());
-      setQueueBlockedProcesses(simulatorInstance.getQueueBlockedProcesses());
-      setListCompletedProcesses(simulatorInstance.getListCompletedProcesses());
-      setCpuUsage(simulatorInstance.getCpuUsage());
-      setStatistics(simulatorInstance.getStatistics());
-      setConfig(simulatorInstance.getConfig());
-    });
+    simulatorInstance.subscribe(handlerSubscribe(simulatorInstance));
   }, []);
 
   useEffect(() => {
@@ -86,17 +98,7 @@ export default function SimulatorHome() {
     setSimulator(simulatorInstance);
     setConfig(simulatorInstance?.getConfig() || null);
 
-    simulatorInstance.subscribe(() => {
-      setState(simulatorInstance.getCurrentState());
-      setCurrentProcess(simulatorInstance.getCurrentProcess());
-      setProcesses(simulatorInstance.getProcesses());
-      setQueueReadyProcesses(simulatorInstance.getQueueReadyProcesses());
-      setQueueBlockedProcesses(simulatorInstance.getQueueBlockedProcesses());
-      setListCompletedProcesses(simulatorInstance.getListCompletedProcesses());
-      setCpuUsage(simulatorInstance.getCpuUsage());
-      setStatistics(simulatorInstance.getStatistics());
-      setConfig(simulatorInstance.getConfig());
-    });
+    simulatorInstance.subscribe(handlerSubscribe(simulatorInstance));
   }, [simulatorAlgorithm]);
 
   function getSimulatorAlgorithm(
@@ -164,14 +166,7 @@ export default function SimulatorHome() {
               queueBlockedProcesses={queueBlockedProcesses}
               listCompletedProcesses={listCompletedProcesses}
             />
-            <SimulatorStatistics
-              totalTicks={statistics.totalTicks}
-              averageWaitingTime={statistics.averageWaitingTime}
-              averageBlockingTime={statistics.averageBlockingTime}
-              averageExecutionTime={statistics.averageExecutionTime}
-              totalProcesses={statistics.totalProcesses}
-              totalTime={statistics.totalTime}
-            />
+            <SimulatorStatistics statistics={statistics} />
             <SimulatorProcesses title="Process Control" processes={processes} />
           </div>
         </div>
