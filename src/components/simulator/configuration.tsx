@@ -59,6 +59,9 @@ export function SimulatorConfiguration({
   const [maxBurstTick, setMaxBurstTick] = useState(
     config.processes.maxBurstTick
   );
+  const [maxBurstIoTick, setMaxBurstIoTick] = useState(
+    config.processes.maxBurstIoTick
+  );
   const [maxPriority, setMaxPriority] = useState(config.processes.maxPriority);
   const [percentArrivalNewProcess, setPercentArrivalNewProcess] = useState(
     config.processes.percentArrivalNewProcess
@@ -136,6 +139,20 @@ export function SimulatorConfiguration({
               updateConfig({
                 ...config,
                 processes: { ...config.processes, maxBurstTick: value },
+              });
+            }}
+          />
+          <SliderControl
+            label="Max Burst Io Tick"
+            value={maxBurstIoTick}
+            min={1}
+            max={20}
+            disabled={simulatorState !== SimulatorState.STOPPED}
+            onChange={(value) => {
+              setMaxBurstIoTick(value);
+              updateConfig({
+                ...config,
+                processes: { ...config.processes, maxBurstIoTick: value },
               });
             }}
           />
