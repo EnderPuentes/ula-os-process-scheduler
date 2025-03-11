@@ -5,6 +5,7 @@ import { SimulatorControl } from "@/components/simulator/control";
 import { SimulatorMonitor } from "@/components/simulator/monitor";
 import { SimulatorProcesses } from "@/components/simulator/processes";
 import { SimulatorStatistics } from "@/components/simulator/statistics";
+import { SimulatorExpulsivePriority } from "@/lib/simulators/expulsive/Priority";
 import { SimulatorExpulsiveRoundRobin } from "@/lib/simulators/expulsive/RoundRobin";
 import { SimulatorExpulsiveShortestRemainingTimeFirst } from "@/lib/simulators/expulsive/ShortestRemainingTimeFirst";
 import { SimulatorNonExpulsiveFirstComeFirstServed } from "@/lib/simulators/non-expulsive/FirstComeFirstServed";
@@ -28,7 +29,7 @@ export default function SimulatorHome() {
     | SimulatorNonExpulsiveRandom
     | SimulatorExpulsiveRoundRobin
     | SimulatorExpulsiveShortestRemainingTimeFirst
-    | SimulatorNonExpulsivePriority
+    | SimulatorExpulsivePriority
     | null
   >(null);
 
@@ -107,7 +108,7 @@ export default function SimulatorHome() {
     | SimulatorNonExpulsiveRandom
     | SimulatorExpulsiveRoundRobin
     | SimulatorExpulsiveShortestRemainingTimeFirst
-    | SimulatorNonExpulsivePriority {
+    | SimulatorExpulsivePriority {
     switch (simulatorAlgorithm) {
       case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
         return new SimulatorNonExpulsiveFirstComeFirstServed();
@@ -121,8 +122,8 @@ export default function SimulatorHome() {
         return new SimulatorExpulsiveRoundRobin();
       case SimulatorAlgorithm.EXPULSIVE_SRTF:
         return new SimulatorExpulsiveShortestRemainingTimeFirst();
-      case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
-        return new SimulatorNonExpulsivePriority();
+      case SimulatorAlgorithm.EXPULSIVE_PRIORITY:
+        return new SimulatorExpulsivePriority();
       default:
         return new SimulatorNonExpulsiveFirstComeFirstServed();
     }
