@@ -21,7 +21,7 @@ type ProcessConfig = {
   percentArrivalNewProcess: number;
 };
 
-type ProcessorConfig = {
+type CpuConfig = {
   quantum: number;
   tickSpeed: number;
 };
@@ -29,7 +29,7 @@ type ProcessorConfig = {
 export type SimulatorConfig = {
   algorithm: SimulatorAlgorithm;
   processes: ProcessConfig;
-  processor: ProcessorConfig;
+  cpu: CpuConfig;
 };
 
 export enum ProcessState {

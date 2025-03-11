@@ -72,9 +72,9 @@ export function SimulatorConfiguration({
     config.processes.percentArrivalNewProcess
   );
 
-  // Processor
-  const [tickSpeed, setTickSpeed] = useState(config.processor.tickSpeed);
-  const [quantum, setQuantum] = useState(config.processor.quantum);
+  // CPU
+  const [tickSpeed, setTickSpeed] = useState(config.cpu.tickSpeed);
+  const [quantum, setQuantum] = useState(config.cpu.quantum);
 
   return (
     <Card className="p-4 rounded-lg">
@@ -113,7 +113,7 @@ export function SimulatorConfiguration({
         </div>
         <Separator />
         <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Processor</h2>
+          <h2 className="text-lg font-semibold">CPU</h2>
           <SliderControl
             label="Tick Speed (ms)"
             value={tickSpeed}
@@ -125,7 +125,7 @@ export function SimulatorConfiguration({
               setTickSpeed(value);
               updateConfig({
                 ...config,
-                processor: { ...config.processor, tickSpeed: value },
+                cpu: { ...config.cpu, tickSpeed: value },
               });
             }}
           />
@@ -140,7 +140,7 @@ export function SimulatorConfiguration({
                 setQuantum(value);
                 updateConfig({
                   ...config,
-                  processor: { ...config.processor, quantum: value },
+                  cpu: { ...config.cpu, quantum: value },
                 });
               }}
             />

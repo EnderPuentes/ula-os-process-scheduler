@@ -22,7 +22,9 @@ export class ProcessSchedulerSimulator {
   private listCompletedProcesses: Process[] = [];
 
   private timer: NodeJS.Timeout | null = null;
+
   private currentTick: number = 0;
+  private usedCpuTick: number = 0;
 
   private config: SimulatorConfig = {
     algorithm: SimulatorAlgorithm.NON_EXPULSIVE_FCFS,
@@ -32,7 +34,7 @@ export class ProcessSchedulerSimulator {
       maxInitialProcesses: 10,
       percentArrivalNewProcess: 20,
     },
-    processor: {
+    cpu: {
       quantum: 10,
       tickSpeed: 1000,
     },
@@ -382,7 +384,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess.state === ProcessState.RUNNING &&
       this.currentProcess.remainingTick > 0 &&
       this.currentProcess.burstTick - this.currentProcess.remainingTick <
-        this.config.processor.quantum * this.currentProcess.executionCount
+        this.config.cpu.quantum * this.currentProcess.executionCount
     ) {
       return;
     }
@@ -756,6 +758,15 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
+   * Gets the CPU usage as a percentage.
+   * @returns {number} The CPU usage.
+   */
+  public getCpuUsage(): number {
+    if (this.currentTick === 0) return 0;
+    return (this.usedCpuTick / this.currentTick) * 100;
+  }
+
+  /**
    * Starts the simulation, generating processes and scheduling them.
    */
   public start() {
@@ -764,6 +775,7 @@ export class ProcessSchedulerSimulator {
 
       this.processes = [];
       this.currentTick = 0;
+      this.usedCpuTick = 0;
       this.currentProcess = null;
       this.queueReadyProcesses = [];
       this.queueBlockedProcesses = [];
@@ -773,9 +785,12 @@ export class ProcessSchedulerSimulator {
 
       this.timer = setInterval(() => {
         this.scheduleProcess();
+        if (this.currentProcess) {
+          this.usedCpuTick++;
+        }
         this.currentTick++;
         this.notify();
-      }, this.config.processor.tickSpeed);
+      }, this.config.cpu.tickSpeed);
 
       this.notify();
     }
@@ -790,10 +805,13 @@ export class ProcessSchedulerSimulator {
 
       this.timer = setInterval(() => {
         this.scheduleProcess();
+        if (this.currentProcess) {
+          this.usedCpuTick++;
+        }
         this.currentTick++;
 
         this.notify();
-      }, this.config.processor.tickSpeed);
+      }, this.config.cpu.tickSpeed);
     }
   }
 

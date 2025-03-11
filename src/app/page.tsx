@@ -1,9 +1,9 @@
 "use client";
 
 import { SimulatorConfiguration } from "@/components/simulator/configuration";
+import { SimulatorCpu } from "@/components/simulator/cpu";
 import { SimulatorMonitor } from "@/components/simulator/monitor";
 import { SimulatorProcesses } from "@/components/simulator/processes";
-import { SimulatorProcessor } from "@/components/simulator/processor";
 import { ProcessSchedulerSimulator } from "@/lib/simulator";
 import { Process, SimulatorConfig, SimulatorState } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ export default function SimulatorHome() {
     null
   );
   const [tick, setTick] = useState(0);
+  const [cpuUsage, setCpuUsage] = useState(0);
   const [state, setState] = useState<SimulatorState>(SimulatorState.STOPPED);
 
   const [currentProcess, setCurrentProcess] = useState<Process | null>(null);
@@ -36,6 +37,7 @@ export default function SimulatorHome() {
     simulatorInstance.subscribe(() => {
       setState(simulatorInstance.getCurrentState());
       setTick(simulatorInstance.getCurrentTick());
+      setCpuUsage(simulatorInstance.getCpuUsage());
       setCurrentProcess(simulatorInstance.getCurrentProcess());
       setProcesses(simulatorInstance.getProcesses());
       setQueueReadyProcesses(simulatorInstance.getQueueReadyProcesses());
@@ -50,10 +52,11 @@ export default function SimulatorHome() {
       <div className="container">
         <div className="grid grid-cols-[280px_1fr] gap-4">
           <div className="flex flex-col gap-4">
-            <SimulatorProcessor
+            <SimulatorCpu
               state={state}
               tick={tick}
-              tickSpeed={config?.processor.tickSpeed ?? 0}
+              cpuUsage={cpuUsage}
+              tickSpeed={config?.cpu.tickSpeed ?? 0}
               start={() => simulator?.start()}
               pause={() => simulator?.pause()}
               reset={() => simulator?.reset()}
