@@ -29,7 +29,8 @@ export class ProcessSchedulerSimulator {
     processes: {
       maxPriority: 5,
       maxBurstTick: 10,
-      maxProcesses: 50,
+      maxInitialProcesses: 10,
+      percentArrivalNewProcess: 20,
     },
     processor: {
       quantum: 10,
@@ -52,9 +53,9 @@ export class ProcessSchedulerSimulator {
    * @returns {Process} The generated process.
    */
   private generateRandomProcesses(
-    maxProcesses = this.config.processes.maxProcesses
+    maxInitialProcesses = this.config.processes.maxInitialProcesses
   ) {
-    for (let i = 0; i < maxProcesses; i++) {
+    for (let i = 0; i < maxInitialProcesses; i++) {
       // Generate a random priority between 1 and maxPriority
       const priority =
         Math.floor(Math.random() * this.config.processes.maxPriority) + 1;
@@ -655,6 +656,10 @@ export class ProcessSchedulerSimulator {
    */
   private scheduleProcess() {
     // Schedule the next process (if applicable)
+    // Simulate new process arrival
+    if (Math.random() < this.config.processes.percentArrivalNewProcess / 100) {
+      this.generateRandomProcesses(1);
+    }
     switch (this.config.algorithm) {
       case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
         this.scheduleProcessNonExpulsiveFirstComeFirstServed();
@@ -672,17 +677,9 @@ export class ProcessSchedulerSimulator {
         this.scheduleProcessExpulsiveRoundRobin();
         break;
       case SimulatorAlgorithm.EXPULSIVE_SRTF:
-        // Simulate new process arrival
-        if (Math.random() < 0.5) {
-          this.generateRandomProcesses(1);
-        }
         this.scheduleProcessExpulsiveShortestRemainingTimeFirst();
         break;
       case SimulatorAlgorithm.EXPULSIVE_PRIORITY:
-        // Simulate new process arrival
-        if (Math.random() < 0.25) {
-          this.generateRandomProcesses(1);
-        }
         this.scheduleProcessExpulsivePriority();
         break;
       default:

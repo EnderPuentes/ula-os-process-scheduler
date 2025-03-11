@@ -61,13 +61,16 @@ export function SimulatorConfiguration({
   const [algorithm, setAlgorithm] = useState(config.algorithm);
 
   // Processes
-  const [maxProcesses, setMaxProcesses] = useState(
-    config.processes.maxProcesses
+  const [maxInitialProcesses, setMaxInitialProcesses] = useState(
+    config.processes.maxInitialProcesses
   );
   const [maxBurstTick, setMaxBurstTick] = useState(
     config.processes.maxBurstTick
   );
   const [maxPriority, setMaxPriority] = useState(config.processes.maxPriority);
+  const [percentArrivalNewProcess, setPercentArrivalNewProcess] = useState(
+    config.processes.percentArrivalNewProcess
+  );
 
   // Processor
   const [tickSpeed, setTickSpeed] = useState(config.processor.tickSpeed);
@@ -147,20 +150,6 @@ export function SimulatorConfiguration({
         <div className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">Processes</h2>
           <SliderControl
-            label="Max Processes"
-            value={maxProcesses}
-            min={1}
-            max={100}
-            disabled={simulatorState !== SimulatorState.STOPPED}
-            onChange={(value) => {
-              setMaxProcesses(value);
-              updateConfig({
-                ...config,
-                processes: { ...config.processes, maxProcesses: value },
-              });
-            }}
-          />
-          <SliderControl
             label="Max Priority"
             value={maxPriority}
             min={1}
@@ -185,6 +174,37 @@ export function SimulatorConfiguration({
               updateConfig({
                 ...config,
                 processes: { ...config.processes, maxBurstTick: value },
+              });
+            }}
+          />
+          <SliderControl
+            label="Max Initial Processes"
+            value={maxInitialProcesses}
+            min={1}
+            max={100}
+            disabled={simulatorState !== SimulatorState.STOPPED}
+            onChange={(value) => {
+              setMaxInitialProcesses(value);
+              updateConfig({
+                ...config,
+                processes: { ...config.processes, maxInitialProcesses: value },
+              });
+            }}
+          />
+          <SliderControl
+            label="Percent Arrival New Process"
+            value={percentArrivalNewProcess}
+            min={0}
+            max={100}
+            disabled={simulatorState !== SimulatorState.STOPPED}
+            onChange={(value) => {
+              setPercentArrivalNewProcess(value);
+              updateConfig({
+                ...config,
+                processes: {
+                  ...config.processes,
+                  percentArrivalNewProcess: value,
+                },
               });
             }}
           />

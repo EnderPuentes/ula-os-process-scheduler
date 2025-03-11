@@ -15,9 +15,10 @@ export enum SimulatorState {
 }
 
 type ProcessConfig = {
-  maxProcesses: number;
   maxPriority: number;
   maxBurstTick: number;
+  maxInitialProcesses: number;
+  percentArrivalNewProcess: number;
 };
 
 type ProcessorConfig = {
