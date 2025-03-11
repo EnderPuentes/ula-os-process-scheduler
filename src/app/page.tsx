@@ -28,6 +28,7 @@ export default function SimulatorHome() {
     | SimulatorNonExpulsiveRandom
     | SimulatorExpulsiveRoundRobin
     | SimulatorExpulsiveShortestRemainingTimeFirst
+    | SimulatorNonExpulsivePriority
     | null
   >(null);
 
@@ -105,7 +106,8 @@ export default function SimulatorHome() {
     | SimulatorNonExpulsivePriority
     | SimulatorNonExpulsiveRandom
     | SimulatorExpulsiveRoundRobin
-    | SimulatorExpulsiveShortestRemainingTimeFirst {
+    | SimulatorExpulsiveShortestRemainingTimeFirst
+    | SimulatorNonExpulsivePriority {
     switch (simulatorAlgorithm) {
       case SimulatorAlgorithm.NON_EXPULSIVE_FCFS:
         return new SimulatorNonExpulsiveFirstComeFirstServed();
@@ -119,6 +121,8 @@ export default function SimulatorHome() {
         return new SimulatorExpulsiveRoundRobin();
       case SimulatorAlgorithm.EXPULSIVE_SRTF:
         return new SimulatorExpulsiveShortestRemainingTimeFirst();
+      case SimulatorAlgorithm.NON_EXPULSIVE_PRIORITY:
+        return new SimulatorNonExpulsivePriority();
       default:
         return new SimulatorNonExpulsiveFirstComeFirstServed();
     }
