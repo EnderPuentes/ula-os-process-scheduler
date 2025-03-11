@@ -38,7 +38,10 @@ export function SimulatorMonitor({
         <CardContent className="flex flex-col gap-4 items-center">
           <p className="text-center">Queue Blocked Processes</p>
           <Dialog>
-            <DialogTrigger disabled={simulatorState !== SimulatorState.RUNNING} className="text-sm cursor-pointer">
+            <DialogTrigger
+              disabled={simulatorState !== SimulatorState.RUNNING}
+              className="text-sm cursor-pointer"
+            >
               More Details
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-2xl">
@@ -59,7 +62,10 @@ export function SimulatorMonitor({
         <CardContent className="flex flex-col gap-4 items-center">
           <p className="text-center">Queue Ready Processes</p>
           <Dialog>
-            <DialogTrigger disabled={simulatorState !== SimulatorState.RUNNING} className="text-sm cursor-pointer">
+            <DialogTrigger
+              disabled={simulatorState !== SimulatorState.RUNNING}
+              className="text-sm cursor-pointer"
+            >
               More Details
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-2xl">
@@ -74,13 +80,16 @@ export function SimulatorMonitor({
       <Card>
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-center">
-            {cpu.usage > 0 ? `${cpu.usage}%` : "INACTIVE"}
+            {cpu.usage > 0 ? `${cpu.usage.toFixed(2)}%` : "INACTIVE"}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 items-center">
           <p className="text-center">CPU Usage</p>
           <Dialog>
-            <DialogTrigger disabled={simulatorState !== SimulatorState.RUNNING} className="text-sm cursor-pointer">
+            <DialogTrigger
+              disabled={simulatorState !== SimulatorState.RUNNING}
+              className="text-sm cursor-pointer"
+            >
               More Details
             </DialogTrigger>
             <DialogContent>
@@ -144,7 +153,10 @@ export function SimulatorMonitor({
         <CardContent className="flex flex-col gap-4 items-center">
           <p className="text-center">List Completed Processes</p>
           <Dialog>
-            <DialogTrigger disabled={simulatorState !== SimulatorState.RUNNING} className="text-sm cursor-pointer">
+            <DialogTrigger
+              disabled={simulatorState !== SimulatorState.RUNNING}
+              className="text-sm cursor-pointer"
+            >
               More Details
             </DialogTrigger>
             <DialogContent className="sm:max-w-screen-2xl">
