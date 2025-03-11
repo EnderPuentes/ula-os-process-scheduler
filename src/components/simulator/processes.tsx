@@ -20,13 +20,13 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
   const getStateStyles = (state: ProcessState) => {
     switch (state) {
       case ProcessState.RUNNING:
-        return "bg-green-500 text-white";
+        return "bg-emerald-600 text-white";
       case ProcessState.READY:
-        return "bg-blue-500 text-white";
+        return "bg-sky-600 text-white";
       case ProcessState.BLOCKED:
-        return "bg-red-500 text-white";
+        return "bg-rose-600 text-white";
       case ProcessState.COMPLETED:
-        return "bg-purple-500 text-white";
+        return "bg-indigo-600 text-white";
     }
   };
 
