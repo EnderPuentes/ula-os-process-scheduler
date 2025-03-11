@@ -213,6 +213,12 @@ export class ProcessSchedulerSimulator {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
+      // Order the processes by burst time
+      this.queueReadyProcesses = this.queueReadyProcesses.sort(
+        (a, b) => a.burstTick - b.burstTick
+      );
+
+      // Get the next process to run
       const initialProcess = this.queueReadyProcesses.shift() || null;
 
       if (initialProcess) {
@@ -255,6 +261,12 @@ export class ProcessSchedulerSimulator {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
+      // Order the processes by priority
+      this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+        return a.priority - b.priority;
+      });
+
+      // Get the next process to run
       const initialProcess = this.queueReadyProcesses.shift() || null;
 
       if (initialProcess) {
@@ -340,6 +352,14 @@ export class ProcessSchedulerSimulator {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
+      // Order the processes by arrival time
+      this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+        return (
+          a.executionCount - b.executionCount || a.arrivalTick - b.arrivalTick
+        );
+      });
+
+      // Get the next process to run
       const initialProcess = this.queueReadyProcesses.shift() || null;
 
       if (initialProcess) {
@@ -438,6 +458,12 @@ export class ProcessSchedulerSimulator {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
+      // Order the processes by remaining execution time
+      this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+        return a.remainingTick - b.remainingTick;
+      });
+
+      // Get the next process to run
       const initialProcess = this.queueReadyProcesses.shift() || null;
 
       if (initialProcess) {
@@ -530,6 +556,12 @@ export class ProcessSchedulerSimulator {
     // If there is no current process, set the next process as the current process
 
     if (!this.currentProcess) {
+      // Order the processes by priority
+      this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+        return a.priority - b.priority;
+      });
+
+      // Get the next process to run
       const initialProcess = this.queueReadyProcesses.shift() || null;
 
       if (initialProcess) {
