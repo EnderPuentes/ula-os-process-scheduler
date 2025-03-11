@@ -44,7 +44,7 @@ export function SimulatorMonitor({
             >
               More Details
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
               <SimulatorProcesses
                 title="Queue Blocked Processes"
                 processes={queueBlockedProcesses}
@@ -68,7 +68,7 @@ export function SimulatorMonitor({
             >
               More Details
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
               <SimulatorProcesses
                 title="Queue Ready Processes"
                 processes={queueReadyProcesses}
@@ -159,7 +159,7 @@ export function SimulatorMonitor({
             >
               More Details
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
               <SimulatorProcesses
                 title="List Completed Processes"
                 processes={listCompletedProcesses}
