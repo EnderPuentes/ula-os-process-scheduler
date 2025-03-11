@@ -1,18 +1,24 @@
-import { Process, SimulatorState } from "@/lib/types";
+import { SimulatorAlgorithm, SimulatorState } from "@/lib/types";
 import { PauseIcon, PlayIcon, RefreshCwIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Separator } from "../ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-type SimulatorCpuProps = {
+type SimulatorControlProps = {
   state: SimulatorState;
-  cpuUsage: number;
-  currentProcess: Process | null;
   start: () => void;
   pause: () => void;
   reset: () => void;
   resume: () => void;
+  simulatorAlgorithm: SimulatorAlgorithm;
+  onChangeSimulatorAlgorithm: (algorithm: SimulatorAlgorithm) => void;
 };
 
 const getStateBadgeColor = (state: SimulatorState) => {
@@ -28,65 +34,48 @@ const getStateBadgeColor = (state: SimulatorState) => {
   }
 };
 
-export function SimulatorCpu({
+export function SimulatorControl({
   state,
-  cpuUsage,
-  currentProcess,
   start,
   pause,
   reset,
   resume,
-}: SimulatorCpuProps) {
+  simulatorAlgorithm,
+  onChangeSimulatorAlgorithm,
+}: SimulatorControlProps) {
   return (
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle className="text-2xl font-bold">CPU</CardTitle>
+          <CardTitle className="text-xl font-bold">Control</CardTitle>
           <Badge className={`text-sm ${getStateBadgeColor(state)}`}>
             {state}
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <span className="text-2xl font-bold">
-              <Badge className="text-3xl py-2 px-4" variant="outline">
-                {cpuUsage.toFixed(2)}%
-              </Badge>
-            </span>
-          </div>
-        </div>
-        <Separator />
-        {currentProcess && (
-          <>
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm">
-                  <span className="font-bold">Current Process:</span>{" "}
-                  {currentProcess.id}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Priority:</span>{" "}
-                  {currentProcess.priority}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Arrival Tick:</span>{" "}
-                  {currentProcess.arrivalTick}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Burst Tick:</span>{" "}
-                  {currentProcess.burstTick}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Remaining Tick:</span>{" "}
-                  {currentProcess.remainingTick}
-                </span>
-              </div>
-            </div>
-            <Separator />
-          </>
-        )}
+        <Select
+          disabled={state !== SimulatorState.STOPPED}
+          value={simulatorAlgorithm}
+          onValueChange={(value) => {
+            onChangeSimulatorAlgorithm(value as SimulatorAlgorithm);
+          }}
+        >
+          <SelectTrigger className="w-full border rounded-md shadow-sm">
+            <SelectValue placeholder="Select an algorithm" />
+          </SelectTrigger>
+          <SelectContent className="mt-1 w-full rounded-md shadow-lg">
+            {Object.values(SimulatorAlgorithm).map((alg) => (
+              <SelectItem
+                key={alg}
+                value={alg}
+                className="cursor-pointer hover:bg-gray-100"
+              >
+                {alg}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <div className="flex flex-row gap-2">
           <Button
             className="cursor-pointer flex flex-row gap-2"

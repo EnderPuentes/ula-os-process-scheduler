@@ -8,13 +8,6 @@ import {
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Separator } from "../ui/separator";
 import { Slider } from "../ui/slider";
 
@@ -50,16 +43,15 @@ interface SimulatorConfigurationProps {
   config: SimulatorConfig;
   updateConfig: (config: SimulatorConfig) => void;
   simulatorState: SimulatorState;
+  simulatorAlgorithm: SimulatorAlgorithm;
 }
 
 export function SimulatorConfiguration({
   config,
   updateConfig,
   simulatorState,
+  simulatorAlgorithm,
 }: SimulatorConfigurationProps) {
-  // Algorithm
-  const [algorithm, setAlgorithm] = useState(config.algorithm);
-
   // Processes
   const [maxInitialProcesses, setMaxInitialProcesses] = useState(
     config.processes.maxInitialProcesses
@@ -83,36 +75,6 @@ export function SimulatorConfiguration({
       </CardHeader>
       <CardContent className="flex flex-col gap-4 p-0">
         <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Algorithm</h2>
-          <Select
-            disabled={simulatorState !== SimulatorState.STOPPED}
-            value={algorithm}
-            onValueChange={(value) => {
-              setAlgorithm(value as SimulatorAlgorithm);
-              updateConfig({
-                ...config,
-                algorithm: value as SimulatorAlgorithm,
-              });
-            }}
-          >
-            <SelectTrigger className="w-full border rounded-md shadow-sm">
-              <SelectValue placeholder="Select an algorithm" />
-            </SelectTrigger>
-            <SelectContent className="mt-1 w-full rounded-md shadow-lg">
-              {Object.values(SimulatorAlgorithm).map((alg) => (
-                <SelectItem
-                  key={alg}
-                  value={alg}
-                  className="cursor-pointer hover:bg-gray-100"
-                >
-                  {alg}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Separator />
-        <div className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">CPU</h2>
           <SliderControl
             label="Tick Speed (ms)"
@@ -129,7 +91,7 @@ export function SimulatorConfiguration({
               });
             }}
           />
-          {algorithm === SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN && (
+          {simulatorAlgorithm === SimulatorAlgorithm.EXPULSIVE_ROUND_ROBIN && (
             <SliderControl
               label="Quantum"
               value={quantum}
