@@ -41,17 +41,19 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center">Process</TableHead>
-                <TableHead className="text-center">Arrival Tick</TableHead>
-                <TableHead className="text-center">Burst Tick</TableHead>
                 <TableHead className="text-center">Priority</TableHead>
                 <TableHead className="text-center">State</TableHead>
-                <TableHead className="text-center">Remaining Tick</TableHead>
-                <TableHead className="text-center">Waiting Tick</TableHead>
-                <TableHead className="text-center">Turnaround Tick</TableHead>
-                <TableHead className="text-center">Response Tick</TableHead>
-                <TableHead className="text-center">Blocking Tick</TableHead>
-                <TableHead className="text-center">Completion Tick</TableHead>
-                <TableHead className="text-center">Execution Count</TableHead>
+                <TableHead className="text-center">Arrival</TableHead>
+                <TableHead className="text-center">Burst</TableHead>
+                <TableHead className="text-center">Remaining</TableHead>
+                <TableHead className="text-center">Burst Io</TableHead>
+                <TableHead className="text-center">Remaining Io</TableHead>
+                <TableHead className="text-center">Waiting</TableHead>
+                <TableHead className="text-center">Turnaround</TableHead>
+                <TableHead className="text-center">Response</TableHead>
+                <TableHead className="text-center">Blocking</TableHead>
+                <TableHead className="text-center">Completion</TableHead>
+                <TableHead className="text-center">Exec CPU</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -59,12 +61,6 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
                 processes.map((process: Process) => (
                   <TableRow key={process.id}>
                     <TableCell className="text-center">{process.id}</TableCell>
-                    <TableCell className="text-center">
-                      {process.arrivalTick}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {process.burstTick}
-                    </TableCell>
                     <TableCell className="text-center">
                       {process.priority}
                     </TableCell>
@@ -76,7 +72,19 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">
+                      {process.arrivalTick}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {process.burstTick}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {process.remainingTick}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {process.burstIoTick}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {process.remainingIoTick}
                     </TableCell>
                     <TableCell className="text-center">
                       {process.waitingTick}
@@ -100,7 +108,7 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
                 ))
               ) : (
                 <TableRow className="text-center">
-                  <TableCell colSpan={12}>
+                  <TableCell colSpan={14}>
                     <span className="text-sm font-semibold block py-4">
                       No processes
                     </span>
