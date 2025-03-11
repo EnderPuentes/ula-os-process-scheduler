@@ -844,7 +844,7 @@ export class ProcessSchedulerSimulator {
 
   public stop() {
     if (this.state === SimulatorState.RUNNING) {
-      this.state = SimulatorState.STOPPED;
+      this.state = SimulatorState.COMPLETED;
 
       if (this.timer) {
         clearInterval(this.timer);

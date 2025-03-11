@@ -12,6 +12,7 @@ export enum SimulatorState {
   RUNNING = "RUNNING",
   PAUSED = "PAUSED",
   STOPPED = "STOPPED",
+  COMPLETED = "COMPLETED",
 }
 
 type ProcessConfig = {
