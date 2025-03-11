@@ -129,6 +129,14 @@ export abstract class SimulatorBase {
             process.waitingTick++;
             process.turnaroundTick++;
             break;
+          case ProcessState.BLOCKED:
+            process.remainingIoTick--;
+            process.blockingTick++;
+            process.turnaroundTick++;
+            if (process.remainingIoTick <= 0) {
+              process.state = ProcessState.READY;
+            }
+            break;
         }
       });
 
