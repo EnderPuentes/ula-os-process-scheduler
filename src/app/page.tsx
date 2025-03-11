@@ -4,16 +4,20 @@ import { SimulatorConfiguration } from "@/components/simulator/configuration";
 import { SimulatorCpu } from "@/components/simulator/cpu";
 import { SimulatorMonitor } from "@/components/simulator/monitor";
 import { SimulatorProcesses } from "@/components/simulator/processes";
+import { SimulatorStatistics } from "@/components/simulator/statistics";
 import { ProcessSchedulerSimulator } from "@/lib/simulator";
-import { Process, SimulatorConfig, SimulatorState } from "@/lib/types";
+import {
+  Process,
+  SimulatorConfig,
+  SimulatorState,
+  Statistics,
+} from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export default function SimulatorHome() {
   const [simulator, setSimulator] = useState<ProcessSchedulerSimulator | null>(
     null
   );
-  const [tick, setTick] = useState(0);
-  const [cpuUsage, setCpuUsage] = useState(0);
   const [state, setState] = useState<SimulatorState>(SimulatorState.STOPPED);
 
   const [currentProcess, setCurrentProcess] = useState<Process | null>(null);
@@ -27,6 +31,16 @@ export default function SimulatorHome() {
     Process[]
   >([]);
 
+  const [cpuUsage, setCpuUsage] = useState<number>(0);
+  const [statistics, setStatistics] = useState<Statistics>({
+    totalTime: 0,
+    totalTicks: 0,
+    averageWaitingTime: 0,
+    averageBlockingTime: 0,
+    averageExecutionTime: 0,
+    totalProcesses: 0,
+  });
+
   const [config, setConfig] = useState<SimulatorConfig | null>(null);
 
   useEffect(() => {
@@ -36,13 +50,13 @@ export default function SimulatorHome() {
 
     simulatorInstance.subscribe(() => {
       setState(simulatorInstance.getCurrentState());
-      setTick(simulatorInstance.getCurrentTick());
-      setCpuUsage(simulatorInstance.getCpuUsage());
       setCurrentProcess(simulatorInstance.getCurrentProcess());
       setProcesses(simulatorInstance.getProcesses());
       setQueueReadyProcesses(simulatorInstance.getQueueReadyProcesses());
       setQueueBlockedProcesses(simulatorInstance.getQueueBlockedProcesses());
       setListCompletedProcesses(simulatorInstance.getListCompletedProcesses());
+      setCpuUsage(simulatorInstance.getCpuUsage());
+      setStatistics(simulatorInstance.getStatistics());
       setConfig(simulatorInstance.getConfig());
     });
   }, []);
@@ -54,13 +68,11 @@ export default function SimulatorHome() {
           <div className="flex flex-col gap-4">
             <SimulatorCpu
               state={state}
-              tick={tick}
               cpuUsage={cpuUsage}
-              tickSpeed={config?.cpu.tickSpeed ?? 0}
               start={() => simulator?.start()}
               pause={() => simulator?.pause()}
               reset={() => simulator?.reset()}
-              restart={() => simulator?.restart()}
+              resume={() => simulator?.resume()}
               currentProcess={currentProcess}
             />
             {config && (
@@ -78,6 +90,14 @@ export default function SimulatorHome() {
               queueReadyProcesses={queueReadyProcesses}
               queueBlockedProcesses={queueBlockedProcesses}
               listCompletedProcesses={listCompletedProcesses}
+            />
+            <SimulatorStatistics
+              totalTicks={statistics.totalTicks}
+              averageWaitingTime={statistics.averageWaitingTime}
+              averageBlockingTime={statistics.averageBlockingTime}
+              averageExecutionTime={statistics.averageExecutionTime}
+              totalProcesses={statistics.totalProcesses}
+              totalTime={statistics.totalTime}
             />
             <SimulatorProcesses title="Process Control" processes={processes} />
           </div>

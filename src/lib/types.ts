@@ -53,3 +53,12 @@ export type Process = {
   responseTick: number | null;
   executionCount: number;
 };
+
+export type Statistics = {
+  totalTime: number;
+  totalTicks: number;
+  averageWaitingTime: number;
+  averageBlockingTime: number;
+  averageExecutionTime: number;
+  totalProcesses: number;
+};

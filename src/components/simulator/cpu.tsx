@@ -7,53 +7,36 @@ import { Separator } from "../ui/separator";
 
 type SimulatorCpuProps = {
   state: SimulatorState;
-  tick: number;
   cpuUsage: number;
-  tickSpeed: number;
   currentProcess: Process | null;
   start: () => void;
   pause: () => void;
   reset: () => void;
-  restart: () => void;
+  resume: () => void;
+};
+
+const getStateBadgeColor = (state: SimulatorState) => {
+  switch (state) {
+    case SimulatorState.RUNNING:
+      return "bg-green-500 text-white";
+    case SimulatorState.PAUSED:
+      return "bg-yellow-500 text-black";
+    case SimulatorState.STOPPED:
+      return "bg-red-500 text-white";
+    default:
+      return "bg-gray-500 text-white";
+  }
 };
 
 export function SimulatorCpu({
   state,
-  tick,
   cpuUsage,
-  tickSpeed,
   currentProcess,
   start,
   pause,
   reset,
-  restart,
+  resume,
 }: SimulatorCpuProps) {
-  const getStateBadgeColor = (state: SimulatorState) => {
-    switch (state) {
-      case SimulatorState.RUNNING:
-        return "bg-green-500 text-white";
-      case SimulatorState.PAUSED:
-        return "bg-yellow-500 text-black";
-      case SimulatorState.STOPPED:
-        return "bg-red-500 text-white";
-      default:
-        return "bg-gray-500 text-white";
-    }
-  };
-
-  const getCpuUsageColor = (processorUsage: number) => {
-    if (processorUsage > 90) return "bg-red-900 text-white";
-    if (processorUsage > 80) return "bg-red-500 text-white";
-    if (processorUsage > 70) return "bg-orange-500 text-white";
-    if (processorUsage > 60) return "bg-yellow-500 text-black";
-    if (processorUsage > 50) return "bg-yellow-300 text-black";
-    if (processorUsage > 40) return "bg-green-500 text-white";
-    if (processorUsage > 30) return "bg-green-300 text-white";
-    if (processorUsage > 20) return "bg-green-200 text-black";
-    if (processorUsage > 10) return "bg-green-100 text-black";
-    return "dark:bg-white dark:text-black bg-black text-white";
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -65,30 +48,61 @@ export function SimulatorCpu({
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-row gap-2">
+          <Button
+            className="cursor-pointer flex flex-row gap-2"
+            onClick={() => {
+              if (state === SimulatorState.STOPPED) {
+                start();
+              } else if (state === SimulatorState.RUNNING) {
+                pause();
+              } else if (state === SimulatorState.PAUSED) {
+                resume();
+              }
+            }}
+          >
+            {state === SimulatorState.RUNNING ? (
+              <>
+                <PauseIcon className="w-4 h-4" />
+                <span>Pause</span>
+              </>
+            ) : state === SimulatorState.PAUSED ? (
+              <>
+                <PlayIcon className="w-4 h-4" />
+                <span>Resume</span>
+              </>
+            ) : (
+              <>
+                <PlayIcon className="w-4 h-4" />
+                <span>Start</span>
+              </>
+            )}
+          </Button>
+
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            disabled={state !== SimulatorState.PAUSED}
+            onClick={reset}
+          >
+            <RefreshCwIcon className="w-4 h-4" />
+          </Button>
+        </div>
+        <Separator />
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <span className="text-2xl font-bold">
-              <Badge className={`text-3xl ${getCpuUsageColor(cpuUsage)}`}>
+              <Badge className="text-3xl py-2 px-4" variant="outline">
                 {cpuUsage.toFixed(2)}%
               </Badge>
             </span>
           </div>
-          <Separator />
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium opacity-50">
-              Execution Time: {tick * tickSpeed} ms
-            </span>
-            <span className="text-xs font-medium opacity-50">
-              Ticks: {tick}
-            </span>
-            <span className="text-xs font-medium opacity-50">
-              Tick Speed: {tickSpeed} ms
-            </span>
-          </div>
         </div>
+
         {currentProcess && (
           <>
             <Separator />
+
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <span className="text-sm">
@@ -113,34 +127,8 @@ export function SimulatorCpu({
                 </span>
               </div>
             </div>
-            <Separator />
           </>
         )}
-        <div className="flex flex-row gap-2">
-          <Button
-            className="cursor-pointer"
-            disabled={state === SimulatorState.RUNNING}
-            onClick={() =>
-              state === SimulatorState.STOPPED ? start() : restart()
-            }
-          >
-            <PlayIcon className="w-4 h-4" />
-          </Button>
-          <Button
-            className="cursor-pointer"
-            disabled={state !== SimulatorState.RUNNING}
-            onClick={pause}
-          >
-            <PauseIcon className="w-4 h-4" />
-          </Button>
-          <Button
-            className="cursor-pointer"
-            disabled={state !== SimulatorState.PAUSED}
-            onClick={reset}
-          >
-            <RefreshCwIcon className="w-4 h-4" />
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );

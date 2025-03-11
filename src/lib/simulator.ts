@@ -4,6 +4,7 @@ import {
   SimulatorAlgorithm,
   SimulatorConfig,
   SimulatorState,
+  Statistics,
 } from "./types";
 
 /**
@@ -23,8 +24,8 @@ export class ProcessSchedulerSimulator {
 
   private timer: NodeJS.Timeout | null = null;
 
-  private currentTick: number = 0;
-  private usedCpuTick: number = 0;
+  private totalTicks: number = 0;
+  private usedCpuTicks: number = 0;
 
   private config: SimulatorConfig = {
     algorithm: SimulatorAlgorithm.NON_EXPULSIVE_FCFS,
@@ -68,7 +69,7 @@ export class ProcessSchedulerSimulator {
 
       this.processes.push({
         id: this.processes.length + 1,
-        arrivalTick: this.currentTick,
+        arrivalTick: this.totalTicks,
         burstTick: executionTick,
         remainingTick: executionTick,
         priority: priority,
@@ -142,7 +143,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
+        completionTick: this.totalTicks,
       };
 
       // Sync the current process to the list of processes
@@ -157,7 +158,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...nextProcess,
         state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
+        responseTick: this.totalTicks,
         executionCount: nextProcess.executionCount + 1,
       };
 
@@ -184,7 +185,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -227,7 +228,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -275,7 +276,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -317,7 +318,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -369,7 +370,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -404,7 +405,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.READY,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -412,7 +413,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.COMPLETED,
-          completionTick: this.currentTick,
+          completionTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -424,7 +425,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...nextProcess,
         state: ProcessState.RUNNING,
-        responseTick: this.currentTick,
+        responseTick: this.totalTicks,
         executionCount: nextProcess.executionCount + 1,
       };
 
@@ -434,7 +435,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
+        completionTick: this.totalTicks,
       };
 
       // Sync the current process to the list of processes
@@ -470,7 +471,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -493,7 +494,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.READY,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -501,7 +502,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...nextProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: nextProcess.executionCount + 1,
         };
 
@@ -511,7 +512,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.COMPLETED,
-          completionTick: this.currentTick,
+          completionTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -522,7 +523,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...nextProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: nextProcess.executionCount + 1,
         };
 
@@ -533,7 +534,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
+        completionTick: this.totalTicks,
       };
       // Sync the current process to the list of processes
       this.syncProcess(this.currentProcess);
@@ -565,7 +566,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...initialProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: initialProcess.executionCount + 1,
         };
 
@@ -588,7 +589,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.READY,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -596,7 +597,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...nextProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: nextProcess.executionCount + 1,
         };
 
@@ -606,7 +607,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.COMPLETED,
-          completionTick: this.currentTick,
+          completionTick: this.totalTicks,
         };
         // Sync the current process to the list of processes
         this.syncProcess(this.currentProcess);
@@ -617,7 +618,7 @@ export class ProcessSchedulerSimulator {
         this.currentProcess = {
           ...nextProcess,
           state: ProcessState.RUNNING,
-          responseTick: this.currentTick,
+          responseTick: this.totalTicks,
           executionCount: nextProcess.executionCount + 1,
         };
 
@@ -628,7 +629,7 @@ export class ProcessSchedulerSimulator {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
-        completionTick: this.currentTick,
+        completionTick: this.totalTicks,
       };
       // Sync the current process to the list of processes
       this.syncProcess(this.currentProcess);
@@ -693,14 +694,6 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
-   * Gets the current tick of the simulator.
-   * @returns {number} The current tick.
-   */
-  public getCurrentTick(): number {
-    return this.currentTick;
-  }
-
-  /**
    * Gets the current process being executed.
    * @returns {Process | null} The current process or null if none.
    */
@@ -757,13 +750,57 @@ export class ProcessSchedulerSimulator {
     return this.listCompletedProcesses;
   }
 
-  /**
-   * Gets the CPU usage as a percentage.
-   * @returns {number} The CPU usage.
-   */
   public getCpuUsage(): number {
-    if (this.currentTick === 0) return 0;
-    return (this.usedCpuTick / this.currentTick) * 100;
+    return this.totalTicks === 0
+      ? 0
+      : (this.usedCpuTicks / this.totalTicks) * 100;
+  }
+
+  /**
+   * Gets the statistics of the simulator.
+   * @returns {Object} The statistics.
+   */
+  public getStatistics(): Statistics {
+    const totalTicks = this.totalTicks;
+    const totalTime = this.totalTicks * this.config.cpu.tickSpeed;
+    const totalProcesses = this.processes.length;
+
+    const averageWaitingTime =
+      this.listCompletedProcesses.length > 0
+        ? this.listCompletedProcesses.reduce(
+            (acc, process) =>
+              acc +
+              ((process.completionTick ?? 0) -
+                (process.arrivalTick ?? 0) -
+                (process.burstTick ?? 0)),
+            0
+          ) / this.listCompletedProcesses.length
+        : 0;
+
+    const averageBlockingTime =
+      this.listCompletedProcesses.length > 0
+        ? this.listCompletedProcesses.reduce(
+            (acc, process) => acc + (process.blockingTick ?? 0),
+            0
+          ) / this.listCompletedProcesses.length
+        : 0;
+
+    const averageExecutionTime =
+      this.listCompletedProcesses.length > 0
+        ? this.listCompletedProcesses.reduce(
+            (acc, process) => acc + (process.burstTick ?? 0),
+            0
+          ) / this.listCompletedProcesses.length
+        : 0;
+
+    return {
+      totalTime,
+      totalTicks,
+      totalProcesses,
+      averageWaitingTime,
+      averageBlockingTime,
+      averageExecutionTime,
+    };
   }
 
   /**
@@ -774,8 +811,8 @@ export class ProcessSchedulerSimulator {
       this.state = SimulatorState.RUNNING;
 
       this.processes = [];
-      this.currentTick = 0;
-      this.usedCpuTick = 0;
+      this.totalTicks = 0;
+      this.usedCpuTicks = 0;
       this.currentProcess = null;
       this.queueReadyProcesses = [];
       this.queueBlockedProcesses = [];
@@ -786,9 +823,9 @@ export class ProcessSchedulerSimulator {
       this.timer = setInterval(() => {
         this.scheduleProcess();
         if (this.currentProcess) {
-          this.usedCpuTick++;
+          this.usedCpuTicks++;
         }
-        this.currentTick++;
+        this.totalTicks++;
         this.notify();
       }, this.config.cpu.tickSpeed);
 
@@ -797,18 +834,18 @@ export class ProcessSchedulerSimulator {
   }
 
   /**
-   * Restarts the simulation from a paused state.
+   * Resumes the simulation from a paused state.
    */
-  public restart() {
+  public resume() {
     if (this.state === SimulatorState.PAUSED) {
       this.state = SimulatorState.RUNNING;
 
       this.timer = setInterval(() => {
         this.scheduleProcess();
         if (this.currentProcess) {
-          this.usedCpuTick++;
+          this.usedCpuTicks++;
         }
-        this.currentTick++;
+        this.totalTicks++;
 
         this.notify();
       }, this.config.cpu.tickSpeed);
@@ -844,7 +881,7 @@ export class ProcessSchedulerSimulator {
       }
 
       this.processes = [];
-      this.currentTick = 0;
+      this.totalTicks = 0;
       this.currentProcess = null;
       this.queueReadyProcesses = [];
       this.queueBlockedProcesses = [];
