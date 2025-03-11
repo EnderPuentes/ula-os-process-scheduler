@@ -48,6 +48,45 @@ export function SimulatorCpu({
         </div>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <span className="text-2xl font-bold">
+              <Badge className="text-3xl py-2 px-4" variant="outline">
+                {cpuUsage.toFixed(2)}%
+              </Badge>
+            </span>
+          </div>
+        </div>
+        <Separator />
+        {currentProcess && (
+          <>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-sm">
+                  <span className="font-bold">Current Process:</span>{" "}
+                  {currentProcess.id}
+                </span>
+                <span className="text-sm">
+                  <span className="font-bold">Priority:</span>{" "}
+                  {currentProcess.priority}
+                </span>
+                <span className="text-sm">
+                  <span className="font-bold">Arrival Tick:</span>{" "}
+                  {currentProcess.arrivalTick}
+                </span>
+                <span className="text-sm">
+                  <span className="font-bold">Burst Tick:</span>{" "}
+                  {currentProcess.burstTick}
+                </span>
+                <span className="text-sm">
+                  <span className="font-bold">Remaining Tick:</span>{" "}
+                  {currentProcess.remainingTick}
+                </span>
+              </div>
+            </div>
+            <Separator />
+          </>
+        )}
         <div className="flex flex-row gap-2">
           <Button
             className="cursor-pointer flex flex-row gap-2"
@@ -88,47 +127,6 @@ export function SimulatorCpu({
             <RefreshCwIcon className="w-4 h-4" />
           </Button>
         </div>
-        <Separator />
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <span className="text-2xl font-bold">
-              <Badge className="text-3xl py-2 px-4" variant="outline">
-                {cpuUsage.toFixed(2)}%
-              </Badge>
-            </span>
-          </div>
-        </div>
-
-        {currentProcess && (
-          <>
-            <Separator />
-
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm">
-                  <span className="font-bold">Current Process:</span>{" "}
-                  {currentProcess.id}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Priority:</span>{" "}
-                  {currentProcess.priority}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Arrival Tick:</span>{" "}
-                  {currentProcess.arrivalTick}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Burst Tick:</span>{" "}
-                  {currentProcess.burstTick}
-                </span>
-                <span className="text-sm">
-                  <span className="font-bold">Remaining Tick:</span>{" "}
-                  {currentProcess.remainingTick}
-                </span>
-              </div>
-            </div>
-          </>
-        )}
       </CardContent>
     </Card>
   );
