@@ -1,5 +1,38 @@
 # Changelog
 
+# [0.4.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.3.0...0.4.0) (2025-03-11)
+
+
+### Bug Fixes
+
+* **simulator:** handle process completion with less than or equal to zero remaining ticks ([3f2bdb5](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/3f2bdb5eebe7b594b92223dba4a6dbb21e3e116e))
+
+
+### Features
+
+* **algorithms:** add Non-Preemptive Priority algorithm to algorithm selection ([cbf4bb6](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/cbf4bb61c5a86b8e917988ea323ce740ee2b668f))
+* **algorithms:** add Random scheduling algorithm implementation ([b71bc42](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/b71bc42584a82511ddaaaf82f3f15b613bee6351))
+* **algorithms:** implement Non-Preemptive Priority scheduling algorithm ([c1a3af1](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/c1a3af1eb29e06fcfb9f2a2a2757e0f1fd293992))
+* **algorithms:** implement Shortest Job First (SJF) scheduling algorithm ([60f2eca](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/60f2eca1a87237c77b3899fced6234a8e88406f6))
+* **simulator:** add COMPLETED state to SimulatorState enum ([1290276](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/12902764f62e8c1c0cfaf83b50d44c3e35e76c5f))
+* **simulator:** add comprehensive statistics tracking and visualization ([ba1d922](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/ba1d92257b3b72b85bec007ed0e92d12c2fd46b3))
+* **simulator:** add dynamic process generation configuration ([f7bb8d4](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/f7bb8d495475a2d93a401178ecbec5228bdf29fb))
+* **simulator:** add max burst IO tick configuration slider ([57fb39a](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/57fb39a3831c32295fd84a7422574eec9c2a9064))
+* **simulator:** add max processes configuration slider ([21b3af7](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/21b3af74b0529ca2f05a3ac74d919c7ce7cc0e49))
+* **simulator:** add Non-Expulsive Priority scheduling algorithm ([143da99](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/143da99b19ca10cad2d462f80abd0c7ea2ecfc7f))
+* **simulator:** convert Non-Expulsive Priority to Expulsive Priority algorithm ([173f4f8](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/173f4f861896af446d4d5b58a0897e084335fbdf))
+* **simulator:** enhance CPU monitoring with detailed process information ([44fe210](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/44fe2100e6e6ef3eb59080649129b8e51823191c))
+* **simulator:** implement blocking state handling in FCFS algorithm ([503a78c](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/503a78ca9080897bbcb62805b32944ad87658467))
+* **simulator:** implement dynamic algorithm selection and control ([75c6098](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/75c609824a358bed84f30920b0a2f42c5ab19c65))
+* **simulator:** implement Expulsive Priority scheduling algorithm ([f7fa011](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/f7fa0112244c10e722ae6e86a516162ff881c9dc))
+* **simulator:** implement Shortest Remaining Time First (SRTF) scheduling algorithm ([bc40eee](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/bc40eeeb1ee35f0b15ac7597b9feb11fd2e8e090))
+* **simulator:** improve CPU usage display precision ([3d59b32](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/3d59b321a43d9dd98364572c311a6b7befc5097f))
+* **simulator:** improve process generation and simulation flow ([4758f89](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/4758f89f2350fa2626c1784772f58b098839a4f3))
+* **types:** add StateTransitionResult and update Process type with execution count ([8d8a6fa](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/8d8a6fa8e04c879d55dc0ef5aea8bc58faa3f97f))
+* **ui:** add execution count column to process control table ([9235910](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/92359107665d6e712b0216ac1163c5d8ba338041))
+* **ui:** add SimulatorMonitor with process queue visualization and details dialog ([aabf104](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/aabf10421f9f8fcad67722e527480caca8aa4eaf))
+* **ui:** create detailed process control table with comprehensive process metrics ([c4d5fa4](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/c4d5fa4b6f7ef0b5caeac35f8679955aea30b4d1))
+
 # [0.3.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.2.0...0.3.0) (2025-03-09)
 
 
