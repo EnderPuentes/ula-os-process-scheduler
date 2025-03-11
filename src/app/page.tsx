@@ -60,9 +60,6 @@ export default function SimulatorHome() {
   const [config, setConfig] = useState<SimulatorConfig | null>(null);
 
   useEffect(() => {
-    console.log(currentProcess);
-    console.log(cpuUsage);
-
     const simulatorInstance = getSimulatorAlgorithm(simulatorAlgorithm);
 
     setSimulator(simulatorInstance);
@@ -156,6 +153,11 @@ export default function SimulatorHome() {
           </div>
           <div className="flex flex-col gap-4">
             <SimulatorMonitor
+              simulatorState={state}
+              cpu={{
+                usage: cpuUsage,
+                currentProcess: currentProcess,
+              }}
               queueReadyProcesses={queueReadyProcesses}
               queueBlockedProcesses={queueBlockedProcesses}
               listCompletedProcesses={listCompletedProcesses}

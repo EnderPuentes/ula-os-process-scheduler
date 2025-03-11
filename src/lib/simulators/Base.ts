@@ -25,6 +25,7 @@ export abstract class SimulatorBase {
 
   protected totalTicks: number = 0;
   protected usedCpuTicks: number = 0;
+  protected cpuUse: number = 0;
 
   protected config: SimulatorConfig = {
     processes: {
@@ -219,9 +220,7 @@ export abstract class SimulatorBase {
   }
 
   public getCpuUsage(): number {
-    return this.totalTicks === 0
-      ? 0
-      : (this.usedCpuTicks / this.totalTicks) * 100;
+    return this.cpuUse; 
   }
 
   /**
@@ -307,7 +306,12 @@ export abstract class SimulatorBase {
         if (this.currentProcess) {
           this.usedCpuTicks++;
         }
+
+        // Increment the total ticks
         this.totalTicks++;
+
+        // Calculate the CPU usage
+        this.cpuUse = (this.usedCpuTicks / this.totalTicks) * 100;
 
         // Notify the listeners
         this.notify();
@@ -336,6 +340,9 @@ export abstract class SimulatorBase {
         // Schedule the next process
         this.scheduleProcess();
 
+        // Sync the processes
+        this.syncProcesses();
+
         // Increment the used CPU ticks
         if (this.currentProcess) {
           this.usedCpuTicks++;
@@ -343,6 +350,9 @@ export abstract class SimulatorBase {
 
         // Increment the total ticks
         this.totalTicks++;
+
+        // Calculate the CPU usage
+        this.cpuUse = (this.usedCpuTicks / this.totalTicks) * 100;
 
         // Notify the listeners
         this.notify();
