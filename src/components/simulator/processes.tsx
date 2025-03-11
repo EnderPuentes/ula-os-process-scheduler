@@ -36,7 +36,7 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
         <CardTitle className="text-xl font-bold">{title}</CardTitle>
       </CardHeader>
       <CardContent className="overflow-auto w-full">
-        <div className="overflow-auto min-h-[calc(100vh-420px)] max-w-full">
+        <div className="overflow-auto h-[calc(100vh-550px)] max-w-full">
           <Table>
             <TableHeader>
               <TableRow>
