@@ -159,10 +159,7 @@ export default function SimulatorHome() {
           <div className="flex flex-col gap-4">
             <SimulatorMonitor
               simulatorState={state}
-              cpu={{
-                usage: cpuUsage,
-                currentProcess: currentProcess,
-              }}
+              currentProcess={currentProcess}
               queueReadyProcesses={queueReadyProcesses}
               queueBlockedProcesses={queueBlockedProcesses}
               listCompletedProcesses={listCompletedProcesses}

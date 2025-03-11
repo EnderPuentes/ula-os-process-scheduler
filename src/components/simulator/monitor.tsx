@@ -14,10 +14,7 @@ type SimulatorMonitorProps = {
   queueReadyProcesses: Process[];
   queueBlockedProcesses: Process[];
   listCompletedProcesses: Process[];
-  cpu: {
-    usage: number;
-    currentProcess: Process | null;
-  };
+  currentProcess: Process | null;
 };
 
 export function SimulatorMonitor({
@@ -25,7 +22,7 @@ export function SimulatorMonitor({
   queueReadyProcesses,
   queueBlockedProcesses,
   listCompletedProcesses,
-  cpu,
+  currentProcess,
 }: SimulatorMonitorProps) {
   return (
     <div className="grid grid-cols-4 gap-4">
@@ -80,7 +77,7 @@ export function SimulatorMonitor({
       <Card>
         <CardHeader>
           <CardTitle className="text-4xl font-bold text-center">
-            {cpu.usage > 0 ? `${cpu.usage.toFixed(2)}%` : "INACTIVE"}
+            {currentProcess ? "ACTIVE" : "INACTIVE"}
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 items-center">
@@ -94,46 +91,47 @@ export function SimulatorMonitor({
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>CPU - Current Process</DialogTitle>
+                <DialogTitle className="text-center text-2xl font-bold">
+                  CPU - Current Process
+                </DialogTitle>
               </DialogHeader>
-              <div className="flex flex-col gap-4">
-                {cpu.currentProcess ? (
+              <div className="flex flex-col gap-4 p-10">
+                {currentProcess ? (
                   <>
                     <p>
-                      <span className="font-bold">Id:</span>{" "}
-                      {cpu.currentProcess.id}
+                      <span className="font-bold">Id:</span> {currentProcess.id}
                     </p>
                     <p>
                       <span className="font-bold">Priority:</span>{" "}
-                      {cpu.currentProcess.priority}
+                      {currentProcess.priority}
                     </p>
                     <p>
                       <span className="font-bold">State:</span>{" "}
-                      {cpu.currentProcess.state}
+                      {currentProcess.state}
                     </p>
                     <p>
                       <span className="font-bold">Arrival:</span>{" "}
-                      {cpu.currentProcess.arrivalTick}
+                      {currentProcess.arrivalTick}
                     </p>
                     <p>
                       <span className="font-bold">Burst:</span>{" "}
-                      {cpu.currentProcess.burstTick}
+                      {currentProcess.burstTick}
                     </p>
                     <p>
                       <span className="font-bold">Remaining:</span>{" "}
-                      {cpu.currentProcess.remainingTick}
+                      {currentProcess.remainingTick}
                     </p>
                     <p>
                       <span className="font-bold">Burst Io:</span>{" "}
-                      {cpu.currentProcess.burstIoTick}
+                      {currentProcess.burstIoTick}
                     </p>
                     <p>
                       <span className="font-bold">Remaining Io:</span>{" "}
-                      {cpu.currentProcess.remainingIoTick}
+                      {currentProcess.remainingIoTick}
                     </p>
                     <p>
                       <span className="font-bold">Waiting:</span>{" "}
-                      {cpu.currentProcess.waitingTick}
+                      {currentProcess.waitingTick}
                     </p>
                   </>
                 ) : (
