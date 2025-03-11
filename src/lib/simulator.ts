@@ -508,7 +508,7 @@ export class ProcessSchedulerSimulator {
 
         // Sync the new current process to the list of processes
         this.syncProcess(this.currentProcess);
-      } else if (this.currentProcess.remainingTick === 0) {
+      } else if (this.currentProcess.remainingTick <= 0) {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.COMPLETED,
@@ -530,7 +530,7 @@ export class ProcessSchedulerSimulator {
         // Sync the new current process to the list of processes
         this.syncProcess(this.currentProcess);
       }
-    } else if (this.currentProcess.remainingTick === 0) {
+    } else if (this.currentProcess.remainingTick <= 0) {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
@@ -606,7 +606,7 @@ export class ProcessSchedulerSimulator {
 
         // Sync the new current process to the list of processes
         this.syncProcess(this.currentProcess);
-      } else if (this.currentProcess.remainingTick === 0) {
+      } else if (this.currentProcess.remainingTick <= 0) {
         this.currentProcess = {
           ...this.currentProcess,
           state: ProcessState.COMPLETED,
@@ -628,7 +628,7 @@ export class ProcessSchedulerSimulator {
         // Sync the new current process to the list of processes
         this.syncProcess(this.currentProcess);
       }
-    } else if (this.currentProcess.remainingTick === 0) {
+    } else if (this.currentProcess.remainingTick <= 0) {
       this.currentProcess = {
         ...this.currentProcess,
         state: ProcessState.COMPLETED,
