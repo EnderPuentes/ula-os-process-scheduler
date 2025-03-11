@@ -163,7 +163,6 @@ export class ProcessSchedulerSimulator {
       this.syncProcess(this.currentProcess);
     } else {
       this.currentProcess = null;
-      this.stop();
     }
 
     this.notify();
@@ -444,9 +443,6 @@ export class ProcessSchedulerSimulator {
 
       // Set the current process to null
       this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
     }
 
     this.notify();
@@ -545,9 +541,6 @@ export class ProcessSchedulerSimulator {
 
       // Set the current process to null
       this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
     }
 
     this.notify();
@@ -643,9 +636,6 @@ export class ProcessSchedulerSimulator {
 
       // Set the current process to null
       this.currentProcess = null;
-
-      // Stop the simulation
-      this.stop();
     }
 
     this.notify();
