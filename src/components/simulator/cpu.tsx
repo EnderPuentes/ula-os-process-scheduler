@@ -49,8 +49,8 @@ export function SimulatorCpu({
     if (processorUsage > 50) return "bg-yellow-300 text-black";
     if (processorUsage > 40) return "bg-green-500 text-white";
     if (processorUsage > 30) return "bg-green-300 text-white";
-    if (processorUsage > 20) return "bg-blue-500 text-white";
-    if (processorUsage > 10) return "bg-blue-300 text-white";
+    if (processorUsage > 20) return "bg-green-200 text-black";
+    if (processorUsage > 10) return "bg-green-100 text-black";
     return "dark:bg-white dark:text-black bg-black text-white";
   };
 
