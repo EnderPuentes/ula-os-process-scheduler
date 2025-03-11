@@ -142,6 +142,7 @@ export abstract class SimulatorBase {
       });
 
     this.syncQueueReadyProcesses();
+    this.syncQueueBlockedProcesses();
   }
 
   /**
@@ -151,6 +152,15 @@ export abstract class SimulatorBase {
   protected syncQueueReadyProcesses() {
     this.queueReadyProcesses = this.processes.filter(
       (process) => process.state === ProcessState.READY
+    );
+  }
+
+  /**
+   * Syncs the queue of blocked processes.
+   */
+  protected syncQueueBlockedProcesses() {
+    this.queueBlockedProcesses = this.processes.filter(
+      (process) => process.state === ProcessState.BLOCKED
     );
   }
 
@@ -220,7 +230,7 @@ export abstract class SimulatorBase {
   }
 
   public getCpuUsage(): number {
-    return this.cpuUse; 
+    return this.cpuUse;
   }
 
   /**
