@@ -99,9 +99,11 @@ export function SimulatorProcesses({ title, processes }: ProcessControlProps) {
                   </TableRow>
                 ))
               ) : (
-                <TableRow>
-                  <TableCell colSpan={12} className="text-center">
-                    No processes
+                <TableRow className="text-center">
+                  <TableCell colSpan={12}>
+                    <span className="text-sm font-semibold block py-4">
+                      No processes
+                    </span>
                   </TableCell>
                 </TableRow>
               )}
