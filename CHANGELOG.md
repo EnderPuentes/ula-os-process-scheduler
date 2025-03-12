@@ -1,5 +1,29 @@
 # Changelog
 
+# [0.5.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.4.1...0.5.0) (2025-03-12)
+
+
+### Bug Fixes
+
+* **ui:** adjust process table height for better scrolling experience ([3c4b564](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/3c4b564be8fd5b9d1f701878bda6b4741c6c0cc3))
+* **ui:** improve dialog content scrolling for process queues ([9661457](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/96614579850bb29e3b5740beb9d0b64e3a9ce400))
+
+
+### Features
+
+* **layout:** add footer component to root layout ([cc20e80](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/cc20e801fd6527ac89a9cbec32d14f016684ddf9))
+* **monitor:** improve process details dialog with enhanced UI and icons ([7660ce8](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/7660ce8a567ca499440c62aedd3fc0263e59199a))
+* **simulator:** add initial process selection and blocking methods to base simulator ([a5902db](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/a5902db0e57b96d46ad9923a9a4c3f8b0467243e))
+* **simulator:** add synchronization for blocked processes queue ([b68bd7d](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/b68bd7d82dd47e7ba88ebfe135609110d3667ca2))
+* **simulator:** enhance FCFS scheduling with process sorting and selection methods ([8d55e96](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/8d55e962675efe01fc0ccd0d6db45cba7cfeca42))
+* **simulator:** implement process blocking logic for Expulsive Priority algorithm ([1ac371d](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/1ac371db43a9231b625f8f01e0013efd0d08c998))
+* **simulator:** implement process blocking logic for Non-Expulsive Priority algorithm ([bc4ca13](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/bc4ca1346bf6e8f163c1f76185419bf751b37a2a))
+* **simulator:** implement process blocking logic for Non-Expulsive Random algorithm ([8dce77e](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/8dce77e46729f7ad467aed9f0e5a4409fb7789d5))
+* **simulator:** implement process blocking logic for Round Robin algorithm ([2ec0dbe](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/2ec0dbe26981f4e821eb4f5347ea2f43f4a2e651))
+* **simulator:** implement process blocking logic for Shortest Job First algorithm ([ad77cdb](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/ad77cdb850510844a32146e77bcf086e666b56d6))
+* **simulator:** implement process blocking logic for Shortest Remaining Time First algorithm ([bd425b9](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/bd425b9ac7d035817900d3c91a3aa433b7169572))
+* **ui:** improve CPU usage statistic display precision ([ee646ed](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/ee646edeaacde7145e42abf402856058d62a0176))
+
 ## [0.4.1](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.4.0...0.4.1) (2025-03-11)
 
 # [0.4.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.3.0...0.4.0) (2025-03-11)
