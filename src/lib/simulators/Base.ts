@@ -58,6 +58,11 @@ export abstract class SimulatorBase {
   protected abstract scheduleProcess(): void;
 
   /**
+   * Sorts the processes by remaining execution time.
+   */
+  protected abstract sortByRemainingTime(): void;
+
+  /**
    * Generates a random process with random burst time and priority.
    * @returns {Process} The generated process.
    */
@@ -98,11 +103,51 @@ export abstract class SimulatorBase {
     }
   }
 
+  protected setInitialProcess() {
+    // Order the processes by remaining execution time
+    this.sortByRemainingTime();
+
+    // Get the next process to run
+    const initialProcess = this.queueReadyProcesses.shift() || null;
+
+    if (initialProcess) {
+      // Set the initial process as the current process
+      this.currentProcess = {
+        ...initialProcess,
+        state: ProcessState.RUNNING,
+        responseTick: this.totalTicks,
+        executionCount: initialProcess.executionCount + 1,
+      };
+
+      // Sync the current process to the list of processes
+      this.syncProcess(this.currentProcess);
+    }
+  }
+
   /**
-   * Notifies all subscribed listeners of an update.
+   * Blocks the current process and sets the next process as the current process.
    */
-  protected notify() {
-    this.listeners.forEach((listener) => listener());
+  protected blockProcess() {
+    if (!this.currentProcess) {
+      return;
+    }
+
+    this.currentProcess.state = ProcessState.BLOCKED;
+    this.syncProcess(this.currentProcess);
+    this.queueBlockedProcesses.push(this.currentProcess);
+
+    const nextProcess = this.queueReadyProcesses.shift() || null;
+
+    if (nextProcess) {
+      this.currentProcess = {
+        ...nextProcess,
+        state: ProcessState.RUNNING,
+        responseTick: this.totalTicks,
+        executionCount: nextProcess.executionCount + 1,
+      };
+
+      this.syncProcess(this.currentProcess);
+    }
   }
 
   /**
@@ -136,6 +181,7 @@ export abstract class SimulatorBase {
             process.turnaroundTick++;
             if (process.remainingIoTick <= 0) {
               process.state = ProcessState.READY;
+              process.arrivalTick = this.totalTicks;
             }
             break;
         }
@@ -429,5 +475,12 @@ export abstract class SimulatorBase {
    */
   public subscribe(listener: () => void) {
     this.listeners.push(listener);
+  }
+
+  /**
+   * Notifies all subscribed listeners of an update.
+   */
+  protected notify() {
+    this.listeners.forEach((listener) => listener());
   }
 }
