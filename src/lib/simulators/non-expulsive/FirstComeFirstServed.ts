@@ -14,22 +14,21 @@ export class SimulatorNonExpulsiveFirstComeFirstServed extends SimulatorBase {
     super(config);
   }
 
+  /**
+   * Sorts the processes by arrival time.
+   */
+  protected sortByRemainingTime() {
+    this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
+      return a.arrivalTick - b.arrivalTick;
+    });
+  }
+
+  /**
+   * Schedules the next process to run.
+   */
   protected scheduleProcess() {
     if (!this.currentProcess) {
-      const initialProcess = this.queueReadyProcesses.shift() || null;
-
-      if (initialProcess) {
-        // Set the initial process as the current process
-        this.currentProcess = {
-          ...initialProcess,
-          state: ProcessState.RUNNING,
-          responseTick: this.totalTicks,
-          executionCount: initialProcess.executionCount + 1,
-        };
-
-        // Sync the current process to the list of processes
-        this.syncProcess(this.currentProcess);
-      }
+      this.setInitialProcess();
       return;
     }
 
@@ -39,22 +38,7 @@ export class SimulatorNonExpulsiveFirstComeFirstServed extends SimulatorBase {
       this.currentProcess.remainingTick <= this.currentProcess.burstTick / 2 &&
       this.currentProcess.remainingIoTick > 0
     ) {
-      this.currentProcess.state = ProcessState.BLOCKED;
-      this.syncProcess(this.currentProcess);
-      this.queueBlockedProcesses.push(this.currentProcess);
-
-      const nextProcess = this.queueReadyProcesses.shift() || null;
-
-      if (nextProcess) {
-        this.currentProcess = {
-          ...nextProcess,
-          state: ProcessState.RUNNING,
-          responseTick: this.totalTicks,
-          executionCount: nextProcess.executionCount + 1,
-        };
-
-        this.syncProcess(this.currentProcess);
-      }
+      this.blockProcess();
       return;
     }
 
@@ -65,6 +49,9 @@ export class SimulatorNonExpulsiveFirstComeFirstServed extends SimulatorBase {
     ) {
       return;
     }
+
+    // Order the processes by arrival time
+    this.sortByRemainingTime();
 
     // Get the next process to run
     const nextProcess = this.queueReadyProcesses.shift() || null;
