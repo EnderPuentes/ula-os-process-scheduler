@@ -41,6 +41,31 @@ export class SimulatorExpulsiveShortestRemainingTimeFirst extends SimulatorBase 
       return;
     }
 
+    // If the current process is running and has exceeded its burst time, set it to blockedé
+    if (
+      this.currentProcess.state === ProcessState.RUNNING &&
+      this.currentProcess.remainingTick <= this.currentProcess.burstTick / 2 &&
+      this.currentProcess.remainingIoTick > 0
+    ) {
+      this.currentProcess.state = ProcessState.BLOCKED;
+      this.syncProcess(this.currentProcess);
+      this.queueBlockedProcesses.push(this.currentProcess);
+
+      const nextProcess = this.queueReadyProcesses.shift() || null;
+
+      if (nextProcess) {
+        this.currentProcess = {
+          ...nextProcess,
+          state: ProcessState.RUNNING,
+          responseTick: this.totalTicks,
+          executionCount: nextProcess.executionCount + 1,
+        };
+
+        this.syncProcess(this.currentProcess);
+      }
+      return;
+    }
+
     // Order the processes by remaining execution time
     this.queueReadyProcesses = this.queueReadyProcesses.sort((a, b) => {
       return a.remainingTick - b.remainingTick;
