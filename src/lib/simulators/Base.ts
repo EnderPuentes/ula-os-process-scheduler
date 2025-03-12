@@ -181,7 +181,6 @@ export abstract class SimulatorBase {
             process.turnaroundTick++;
             if (process.remainingIoTick <= 0) {
               process.state = ProcessState.READY;
-              process.arrivalTick = this.totalTicks;
             }
             break;
         }
