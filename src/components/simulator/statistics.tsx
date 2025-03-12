@@ -10,7 +10,9 @@ export function SimulatorStatistics({ statistics }: SimulatorStatisticsProps) {
     <Card>
       <CardContent className="grid grid-cols-7 gap-4 text-center">
         <div className="flex flex-col gap-2">
-          <span className="text-2xl font-bold">{statistics.cpuUsage}%</span>
+          <span className="text-2xl font-bold">
+            {statistics.cpuUsage.toFixed(2)}%
+          </span>
           <span className="text-xs font-semibold opacity-50">CPU Usage</span>
         </div>
         <div className="flex flex-col gap-2">
