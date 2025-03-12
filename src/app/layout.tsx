@@ -1,9 +1,9 @@
+import { Footer } from "@/components/layouts/footer";
 import { Header } from "@/components/layouts/header";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
-
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default function RootLayout({
         >
           <Header />
           <main>{children}</main>
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
