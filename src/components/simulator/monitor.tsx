@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { InfoCard } from "../ui/info-card";
 import { SimulatorProcesses } from "./processes";
 
 interface InfoCardProps {
