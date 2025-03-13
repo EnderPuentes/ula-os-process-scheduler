@@ -90,15 +90,6 @@ export default function SimulatorHome() {
     setConfig(simulatorInstance?.getConfig() || null);
 
     simulatorInstance.subscribe(handlerSubscribe(simulatorInstance));
-  }, []);
-
-  useEffect(() => {
-    const simulatorInstance = getSimulatorAlgorithm(simulatorAlgorithm);
-
-    setSimulator(simulatorInstance);
-    setConfig(simulatorInstance?.getConfig() || null);
-
-    simulatorInstance.subscribe(handlerSubscribe(simulatorInstance));
   }, [simulatorAlgorithm]);
 
   function getSimulatorAlgorithm(
