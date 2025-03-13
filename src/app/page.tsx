@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from "react";
 
 export default function SimulatorHome() {
+  // State to hold the current simulator instance
   const [simulator, setSimulator] = useState<
     | SimulatorNonExpulsiveFirstComeFirstServed
     | SimulatorNonExpulsiveShortestJobFirst
@@ -33,22 +34,28 @@ export default function SimulatorHome() {
     | null
   >(null);
 
+  // State to hold the selected simulator algorithm
   const [simulatorAlgorithm, setSimulatorAlgorithm] =
     useState<SimulatorAlgorithm>(SimulatorAlgorithm.NON_EXPULSIVE_FCFS);
 
+  // State to hold the current state of the simulator
   const [state, setState] = useState<SimulatorState>(SimulatorState.STOPPED);
-
+  // State to hold the current process being executed
   const [currentProcess, setCurrentProcess] = useState<Process | null>(null);
+  // State to hold all processes
   const [processes, setProcesses] = useState<Process[]>([]);
-
+  // State to hold the queue of ready processes
   const [queueReadyProcesses, setQueueReadyProcesses] = useState<Process[]>([]);
+  // State to hold the queue of blocked processes
   const [queueBlockedProcesses, setQueueBlockedProcesses] = useState<Process[]>(
     []
   );
+  // State to hold the list of completed processes
   const [listCompletedProcesses, setListCompletedProcesses] = useState<
     Process[]
   >([]);
 
+  // State to hold the statistics of the simulator
   const [statistics, setStatistics] = useState<Statistics>({
     totalTime: 0,
     totalTicks: 0,
@@ -59,8 +66,10 @@ export default function SimulatorHome() {
     cpuUsage: 0,
   });
 
+  // State to hold the configuration of the simulator
   const [config, setConfig] = useState<SimulatorConfig | null>(null);
 
+  // Handler to subscribe to simulator updates
   const handlerSubscribe =
     (
       simulatorInstance:
@@ -83,6 +92,7 @@ export default function SimulatorHome() {
       setConfig(simulatorInstance.getConfig());
     };
 
+  // Effect to initialize the simulator instance based on the selected algorithm
   useEffect(() => {
     const simulatorInstance = getSimulatorAlgorithm(simulatorAlgorithm);
 
@@ -92,6 +102,7 @@ export default function SimulatorHome() {
     simulatorInstance.subscribe(handlerSubscribe(simulatorInstance));
   }, [simulatorAlgorithm]);
 
+  // Function to get the simulator instance based on the selected algorithm
   function getSimulatorAlgorithm(
     simulatorAlgorithm: SimulatorAlgorithm = SimulatorAlgorithm.NON_EXPULSIVE_FCFS
   ):
