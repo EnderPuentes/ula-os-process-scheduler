@@ -81,6 +81,7 @@ export abstract class SimulatorBase {
       const burstIoTick =
         Math.floor(Math.random() * this.config.processes.maxBurstIoTick) + 1;
 
+      // Create a new process
       this.processes.push({
         id: this.processes.length + 1,
         arrivalTick: this.totalTicks,
@@ -98,7 +99,10 @@ export abstract class SimulatorBase {
         executionCount: 0,
       });
 
+      // Sync the queue of ready processes
       this.syncQueueReadyProcesses();
+
+      // Notify the listeners
       this.notify();
     }
   }
@@ -132,13 +136,19 @@ export abstract class SimulatorBase {
       return;
     }
 
+    // Block the current process
     this.currentProcess.state = ProcessState.BLOCKED;
+
+    // Sync the current process
     this.syncProcess(this.currentProcess);
+
+    // Add the current process to the queue of blocked processes
     this.queueBlockedProcesses.push(this.currentProcess);
 
     const nextProcess = this.queueReadyProcesses.shift() || null;
 
     if (nextProcess) {
+      // Set the next process as the current process
       this.currentProcess = {
         ...nextProcess,
         state: ProcessState.RUNNING,
@@ -146,6 +156,7 @@ export abstract class SimulatorBase {
         executionCount: nextProcess.executionCount + 1,
       };
 
+      // Sync the current process
       this.syncProcess(this.currentProcess);
     }
   }
@@ -186,7 +197,10 @@ export abstract class SimulatorBase {
         }
       });
 
+    // Sync the queue of ready processes
     this.syncQueueReadyProcesses();
+
+    // Sync the queue of blocked processes
     this.syncQueueBlockedProcesses();
   }
 
@@ -247,6 +261,8 @@ export abstract class SimulatorBase {
    */
   public updateConfig(config: SimulatorConfig) {
     this.config = config;
+
+    // Notify the listeners
     this.notify();
   }
 
