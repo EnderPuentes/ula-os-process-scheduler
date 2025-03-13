@@ -1,5 +1,19 @@
 # Changelog
 
+# [0.6.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.5.0...0.6.0) (2025-03-13)
+
+
+### Bug Fixes
+
+* **simulator:** remove redundant arrival tick reset in I/O state ([57c6951](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/57c69519c7eab9d2ddd3d5b6101417a17860dd42))
+
+
+### Features
+
+* **license:** add LICENSE file and update README with project details ([fed406f](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/fed406f19ee42a164600e5dc6ae3e0d459cc4063))
+* **simulator:** enhance process management with improved state synchronization and notifications ([fca3d1f](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/fca3d1f8c733ae27d58eaac26adbb7582ccca708))
+* **types:** enhance type definitions with detailed comments for simulator algorithms and states ([3073ae7](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/3073ae75fec7fb64d881d31da52a09f98a6d5989))
+
 # [0.5.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.4.1...0.5.0) (2025-03-12)
 
 
