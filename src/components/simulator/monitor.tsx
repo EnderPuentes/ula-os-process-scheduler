@@ -72,7 +72,7 @@ export function SimulatorMonitor({
                 View Current Process
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px)] overflow-auto">
               <DialogHeader>
                 <DialogTitle className="text-center text-2xl font-bold">
                   Current Process
@@ -189,7 +189,7 @@ export function SimulatorMonitor({
                 View Queue
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px)] overflow-auto">
               <SimulatorProcesses
                 title="Queue Blocked Processes"
                 processes={queueBlockedProcesses}
@@ -215,7 +215,7 @@ export function SimulatorMonitor({
                 View Queue
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px) overflow-auto">
+            <DialogContent className="sm:max-w-screen-2xl max-h-[calc(100vh-550px)] overflow-auto">
               <SimulatorProcesses
                 title="Queue Ready Processes"
                 processes={queueReadyProcesses}
