@@ -1,6 +1,22 @@
 # 👾 Process Scheduler Simulator
 
+This simulator emulates the execution of processes on a CPU, applying a scheduling algorithm and managing process states. Its purpose is to analyze the behavior of different scheduling strategies in a controlled environment.
+
 To see the production version, click [here](https://ula-so-process-scheduler.vercel.app/).
+
+## Definition
+
+This simulator manages processes with different states:
+
+- **READY**: The process is ready to be executed.
+- **RUNNING**: The process is currently executing on the CPU.
+- **BLOCKED**: The process is waiting for an event (e.g., I/O operation) to be resolved.
+- **COMPLETED**: The process has finished execution.
+
+### Process Queues
+
+- **Ready Queue**: Contains processes in the READY state, waiting to be executed.
+- **Blocked Queue**: Contains processes in the BLOCKED state, waiting for an event to be resolved.
 
 ## About this
 
@@ -19,6 +35,31 @@ This is a [Next.js](https://nextjs.org) project, created with [`create-next-app`
 - **Random Scheduling:** Randomly selects a process from the ready queue for execution.
 - **Shortest Job First (SJF):** Executes the process with the shortest estimated execution time first, without preempting ongoing processes.
 
+## Configuration
+
+The simulator allows adjusting the following parameters:
+
+### General Parameters
+
+- **Clock speed**: Defines the time for each tick of the simulator's clock.
+- **Initial number of processes**: Determines how many processes are generated at the start of the simulation.
+- **Maximum CPU burst duration**: Sets the upper limit for a process's execution time on the CPU.
+- **Maximum blocked wait time**: Controls how long a process can stay in the blocked queue before retrying execution.
+- **Maximum number of concurrent processes**: Defines how many processes can exist in the system simultaneously.
+
+### Scheduling Algorithm Configuration
+
+- **Quantum**: (For Round Robin) Defines the number of ticks before a process must yield the CPU.
+- **Priority type**: (For priority scheduling) Can be static or dynamic.
+- **SJF mode**: Allows selecting whether the algorithm is preemptive or non-preemptive.
+
+### Process Configuration
+
+- **Random process generation**: Enables or disables the automatic creation of new processes during the simulation.
+- **Burst time range**: Defines the minimum and maximum values for process duration.
+- **Blocking probability**: Determines how often a process enters the BLOCKED state.
+- **Maximum wait time in the ready queue**: Adjusts how long a process can wait before being prioritized for execution.
+
 ## User Interface
 
 The simulator features an interactive UI displaying process execution details in real-time. The main UI elements include:
@@ -28,7 +69,18 @@ The simulator features an interactive UI displaying process execution details in
 - **Performance Metrics:** Shows CPU usage, total ticks, total processes, and average execution statistics.
 - **Process Control Table:** Lists all active processes with details like priority, state, burst time, remaining time, waiting time, and turnaround time.
 
-![Simulator Screenshot](./docs/simulator.png)
+![Simulator Screenshot](https://raw.githubusercontent.com/EnderPuentes/ula-so-process-scheduler/main/docs/simulator.png)
+
+## Statistics
+
+During the simulation, the following metrics are collected:
+
+- **Average waiting time**
+- **CPU utilization**
+- **Total execution time**
+- **Total number of executed processes**
+- **Average blocked time**
+- **Number of context switches**
 
 ## Project Structure
 
