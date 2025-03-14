@@ -31,7 +31,7 @@ export abstract class SimulatorBase {
     processes: {
       maxPriority: 5,
       maxBurstTick: 10,
-      maxBurstIoTick: 100,
+      maxBurstIoTick: 10,
       maxInitialProcesses: 10,
       percentArrivalNewProcess: 20,
     },
