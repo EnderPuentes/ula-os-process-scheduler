@@ -1,5 +1,18 @@
 # Changelog
 
+# [0.7.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.6.0...0.7.0) (2025-03-14)
+
+
+### Bug Fixes
+
+* **simulator:** adjust maxBurstIoTick to prevent process overflow in simulator configuration ([20d1807](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/20d18076f6fcb5532f6668975b9437ec03d050fd))
+* **simulator:** correct overflow styling in DialogContent for better UI layout ([f40209d](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/f40209daecdf00b6865531677fbe670928678573))
+
+
+### Features
+
+* **simulator:** add state management for simulator instance and processes ([678e71e](https://github.com/EnderPuentes/ula-so-process-scheduler/commit/678e71e785d5de43a7aa14bc38291abb437ac922))
+
 # [0.6.0](https://github.com/EnderPuentes/ula-so-process-scheduler/compare/0.5.0...0.6.0) (2025-03-13)
 
 
