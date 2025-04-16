@@ -1,80 +1,80 @@
-# 👾 Simulador de Planificación de Procesos
+# 👾 Process Scheduling Simulator
 
-Este simulador emula la ejecución de procesos en una CPU, aplicando un algoritmo de planificación y gestionando los estados de los procesos. Su propósito es analizar el comportamiento de diferentes estrategias de planificación en un entorno controlado.
+This simulator emulates the execution of processes in a CPU, applying a scheduling algorithm and managing process states. Its purpose is to analyze the behavior of different scheduling strategies in a controlled environment.
 
-Para ver la versión de producción, haz clic [aquí](https://ula-so-process-scheduler.vercel.app/).
+To see the production version, click [here](https://process-scheduler-endev.vercel.app/).
 
-## Definición
+## Definition
 
-Este simulador gestiona procesos con diferentes estados:
+This simulator manages processes with different states:
 
-- **READY**: El proceso está listo para ser ejecutado.
-- **RUNNING**: El proceso se está ejecutando actualmente en la CPU.
-- **BLOCKED**: El proceso está esperando a que se resuelva un evento (por ejemplo, una operación de E/S).
-- **COMPLETED**: El proceso ha terminado su ejecución.
+- **READY**: The process is ready to be executed.
+- **RUNNING**: The process is currently executing on the CPU.
+- **BLOCKED**: The process is waiting for an event to be resolved (e.g., an I/O operation).
+- **COMPLETED**: The process has finished executing.
 
-Además el silulador cuenta con su propio estado:
+Additionally, the simulator has its own state:
 
-- **STOPPED**: El simulador está detenido y no se están ejecutando procesos.
-- **RUNNING**: El simulador está en ejecución y los procesos están siendo gestionados.
-- **PAUSED**: El simulador está pausado y la ejecución de los procesos está temporalmente detenida.
+- **STOPPED**: The simulator is stopped and no processes are running.
+- **RUNNING**: The simulator is running and processes are being managed.
+- **PAUSED**: The simulator is paused and process execution is temporarily halted.
 
-### Colas de Procesos
+### Process Queues
 
-- **Ready Queue**: Contiene procesos en estado READY, esperando ser ejecutados.
-- **Blocked Queue**: Contiene procesos en estado BLOCKED, esperando a que se resuelva un evento.
+- **Ready Queue**: Contains processes in READY state, waiting to be executed.
+- **Blocked Queue**: Contains processes in BLOCKED state, waiting for an event to be resolved.
 
-Además, el simulador cuenta con una lista de procesos completados:
+Additionally, the simulator has a list of completed processes:
 
-- **Completed Processes List**: Contiene procesos que han terminado su ejecución y están en estado COMPLETED.
+- **Completed Processes List**: Contains processes that have finished execution and are in COMPLETED state.
 
-### Algoritmos Preventivos
+### Preemptive Algorithms
 
-- **Priority Scheduling:** Asigna una prioridad a cada proceso, y la CPU siempre atiende al proceso con la prioridad más alta. Si llega un proceso de mayor prioridad, el proceso actual se interrumpe.
-- **Round Robin:** Cada proceso recibe una cantidad fija de tiempo (quantum) para ejecutarse. Si el proceso no termina dentro de este tiempo, se mueve al final de la cola y otro proceso toma el control.
-- **Shortest Remaining Time First (SRTF):** Una variación de SJF donde siempre se selecciona el proceso con el menor tiempo de ejecución restante, incluso si interrumpe el proceso que se está ejecutando actualmente.
+- **Priority Scheduling:** Assigns a priority to each process, and the CPU always attends to the process with the highest priority. If a higher priority process arrives, the current process is interrupted.
+- **Round Robin:** Each process receives a fixed amount of time (quantum) to execute. If the process doesn't finish within this time, it moves to the end of the queue and another process takes control.
+- **Shortest Remaining Time First (SRTF):** A variation of SJF where the process with the shortest remaining execution time is always selected, even if it interrupts the currently executing process.
 
-### Algoritmos No Preventivos
+### Non-Preemptive Algorithms
 
-- **First Come, First Served (FCFS):** Los procesos se ejecutan en el orden en que llegan, sin interrupciones.
-- **Priority Scheduling:** Similar a la versión preventiva, pero una vez que un proceso comienza su ejecución, no puede ser interrumpido.
-- **Random Scheduling:** Selecciona aleatoriamente un proceso de la cola de listos para su ejecución.
-- **Shortest Job First (SJF):** Ejecuta primero el proceso con el tiempo estimado de ejecución más corto, sin interrumpir los procesos en curso.
+- **First Come, First Served (FCFS):** Processes are executed in the order they arrive, without interruptions.
+- **Priority Scheduling:** Similar to the preemptive version, but once a process begins execution, it cannot be interrupted.
+- **Random Scheduling:** Randomly selects a process from the ready queue for execution.
+- **Shortest Job First (SJF):** Executes the process with the shortest estimated execution time first, without interrupting ongoing processes.
 
-### Manejo de Procesos Bloqueados
+### Blocked Process Handling
 
-Para simular operaciones de E/S, al generar procesos aleatorios, si el **burst time** es mayor a 5, se asigna un tiempo de **burst I/O**. Cuando el proceso alcanza la mitad de su ejecución, se bloquea para "simular la escritura en disco". Una vez desbloqueado, se reinserta en la cola de listos y reanuda la ejecución según el algoritmo de planificación activo en el próximo cambio de contexto.
+To simulate I/O operations, when generating random processes, if the **burst time** is greater than 5, an **I/O burst** time is assigned. When the process reaches half of its execution, it blocks to "simulate disk writing". Once unblocked, it is reinserted into the ready queue and resumes execution according to the active scheduling algorithm at the next context switch.
 
-Los procesos bloqueados se almacenan en una **Blocked Queue**, que gestiona sus transiciones de vuelta a la cola de listos después de completar la E/S.
+Blocked processes are stored in a **Blocked Queue**, which manages their transitions back to the ready queue after completing I/O.
 
-## Configuración
+## Configuration
 
-El simulador permite ajustar los siguientes parámetros:
+The simulator allows adjusting the following parameters:
 
-### Parámetros Generales
+### General Parameters
 
-- **Clock speed**: Define el tiempo para cada tick del reloj del simulador.
-- **Initial number of processes**: Determina cuántos procesos se generan al inicio de la simulación.
-- **Maximum CPU burst duration**: Establece el límite superior para el tiempo de ejecución de un proceso en la CPU.
-- **Maximum blocked wait time**: Controla cuánto tiempo puede permanecer un proceso en la cola de bloqueados antes de reintentar la ejecución.
-- **Maximum number of concurrent processes**: Define cuántos procesos pueden existir en el sistema simultáneamente.
+- **Clock speed**: Defines the time for each simulator clock tick.
+- **Initial number of processes**: Determines how many processes are generated at simulation start.
+- **Maximum CPU burst duration**: Sets the upper limit for process execution time on the CPU.
+- **Maximum blocked wait time**: Controls how long a process can remain in the blocked queue before retrying execution.
+- **Maximum number of concurrent processes**: Defines how many processes can exist in the system simultaneously.
 
-### Configuración del Algoritmo de Planificación
+### Scheduling Algorithm Configuration
 
-- **Quantum**: (Para Round Robin) Define el número de ticks antes de que un proceso deba ceder la CPU.
-- **Priority type**: (Para la planificación por prioridad) Puede ser estática o dinámica.
-- **SJF mode**: Permite seleccionar si el algoritmo es preventivo o no preventivo.
+- **Quantum**: (For Round Robin) Defines the number of ticks before a process must yield the CPU.
+- **Priority type**: (For priority scheduling) Can be static or dynamic.
+- **SJF mode**: Allows selecting whether the algorithm is preemptive or non-preemptive.
 
-### Configuración del Proceso
+### Process Configuration
 
-- **Random process generation**: Habilita o deshabilita la creación automática de nuevos procesos durante la simulación.
-- **Burst time range**: Define los valores mínimos y máximos para la duración del proceso.
-- **Blocking probability**: Determina con qué frecuencia un proceso entra en el estado BLOCKED.
-- **Maximum wait time in the ready queue**: Ajusta cuánto tiempo puede esperar un proceso antes de ser priorizado para su ejecución.
+- **Random process generation**: Enables or disables automatic creation of new processes during simulation.
+- **Burst time range**: Defines minimum and maximum values for process duration.
+- **Blocking probability**: Determines how frequently a process enters the BLOCKED state.
+- **Maximum wait time in the ready queue**: Adjusts how long a process can wait before being prioritized for execution.
 
-## Estadísticas
+## Statistics
 
-Durante la simulación, se recopilan las siguientes métricas:
+During simulation, the following metrics are collected:
 
 - **Average waiting time**
 - **CPU utilization**
@@ -83,57 +83,30 @@ Durante la simulación, se recopilan las siguientes métricas:
 - **Average blocked time**
 - **Number of context switches**
 
-## Estructura del Proyecto
+## Project Structure
 
-El proyecto se divide en dos partes:
+The project is divided into two parts:
 
-1. **Interfaz Gráfica (Frontend):** Construida con Next.js para visualizar los algoritmos de planificación. La interfaz de usuario se ejecuta en el cliente y está compuesta por [Tailwind CSS](https://tailwindcss.com/) y componentes de [shadcn/ui](https://ui.shadcn.com/).
-2. **Lógica de Simulación (Backend):** Gestiona los procesos y ejecuta los algoritmos de planificación.
+1. **Graphical Interface (Frontend):** Built with Next.js to visualize scheduling algorithms. The user interface runs on the client and is composed of [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/) components.
+2. **Simulation Logic (Backend):** Manages processes and executes scheduling algorithms.
 
-## Interfaz de Usuario
+## User Interface
 
-El simulador cuenta con una interfaz interactiva que muestra los detalles de la ejecución de procesos en tiempo real. Los principales elementos de la interfaz incluyen:
+The simulator features an interactive interface that displays process execution details in real-time. The main interface elements include:
 
-- **Control Panel:** Permite pausar y reanudar la ejecución, seleccionar algoritmos de planificación y ajustar configuraciones.
-- **Processing Status:** Muestra el estado actual de la CPU y el número de procesos bloqueados y listos.
-- **Performance Metrics:** Muestra el uso de la CPU, los ticks totales, los procesos totales y las estadísticas de ejecución promedio.
-- **Process Control Table:** Lista todos los procesos activos con detalles como prioridad, estado, tiempo de ráfaga, tiempo restante, tiempo de espera y tiempo de respuesta.
+- **Control Panel:** Allows pausing and resuming execution, selecting scheduling algorithms, and adjusting configurations.
+- **Processing Status:** Shows current CPU status and number of blocked and ready processes.
+- **Performance Metrics:** Displays CPU usage, total ticks, total processes, and average execution statistics.
+- **Process Control Table:** Lists all active processes with details such as priority, state, burst time, remaining time, wait time, and response time.
 
 ![Simulator Screenshot](docs/simulator.png)
 
-## Libreria del Simulador
+## Simulator Library
 
-Toda la lógica relacionada con el simulador se encuentra en `./src/libs`. El proyecto utiliza TypeScript, con definiciones de tipos almacenadas en `./src/lib/types.ts`.
+All simulator-related logic is located in `./src/libs`. The project uses TypeScript, with type definitions stored in `./src/lib/types.ts`.
 
-El simulador se basa en una clase **Base Simulator**, con cada algoritmo teniendo una clase hija que hereda la funcionalidad base. Cada clase hija solo implementa el planificador de procesos y un método para ordenar la cola de listos. Además, la clase **Simulator** utiliza una función `notify` para informar a la interfaz de usuario sobre los cambios, asegurando la sincronización en tiempo real.
+The simulator is based on a **Base Simulator** class, with each algorithm having a child class that inherits the base functionality. Each child class only implements the process scheduler and a method to sort the ready queue. Additionally, the **Simulator** class uses a `notify` function to inform the user interface about changes, ensuring real-time synchronization.
 
-## Empezando
+## Getting Started
 
-Para ejecutar el proyecto localmente:
-
-```bash
-git clone git@github.com:EnderPuentes/ula-so-process-scheduler.git process-scheduler
-cd process-scheduler
-pnpm install
-pnpm dev
-```
-
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
-
-Puedes comenzar a editar la aplicación modificando `app/page.tsx`. La página se actualiza automáticamente a medida que realizas cambios.
-
-Este proyecto utiliza [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para optimizar y cargar [Geist](https://vercel.com/font), una familia de fuentes moderna de Vercel.
-
-## Aprende Más
-
-Para aprender más sobre Next.js, consulta estos recursos:
-
-- [Documentación de Next.js](https://nextjs.org/docs) - Aprende sobre las características y APIs de Next.js.
-- [Aprende Next.js](https://nextjs.org/learn) - Un tutorial interactivo.
-- [Repositorio de GitHub de Next.js](https://github.com/vercel/next.js) - Tus comentarios y contribuciones son bienvenidos.
-
-Consulta la [Documentación de Despliegue de Next.js](https://nextjs.org/docs/app/building-your-application/deploying) para más detalles.
-
-## Licencia
-
-Para más detalles, por favor consulta el archivo [LICENSE](./LICENSE.md).
+To run the project locally:
